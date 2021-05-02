@@ -1,11 +1,11 @@
-﻿#if NETSTANDARD1_1
+﻿#if NET45
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Simple.API
 {
-    public static class ExtensionNetStd11
+    public static class ExtensionNetFw45
     {
         public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri uri, HttpContent content)
         {

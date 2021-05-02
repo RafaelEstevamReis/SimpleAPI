@@ -15,13 +15,14 @@ A simple C# API client implementation
 
 Get from NuGet and start testing
 
-> PM> Install-Package Simple.MPD
+> PM> Install-Package Simple.API
 
 ## Compatibility
 
 Huge compatibility, currently supports:
 * .Net 5
 * .Net Core 3.1
+* .Net Framework 4.5
 * .Net Standard 1.1
   * .NetCore 1.0+
   * .Net Framework 4.5

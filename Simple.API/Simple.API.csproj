@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netstandard1.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard1.1;net5.0;net45</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <Version>0.6.2.1</Version>
     <Authors>RafaelEstevam.Net</Authors>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Condition="'$(TargetFramework)'=='net45'" Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
 </Project>
