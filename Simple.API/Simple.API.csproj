@@ -15,7 +15,7 @@
     <PackageTags>Simple API client</PackageTags>
     <PackageReleaseNotes>
       See examples and documentation on the GitHub page
-      Paired with commit 
+      Paired with commit a6add91
       https://github.com/RafaelEstevamReis/SimpleAPI
     </PackageReleaseNotes>
   </PropertyGroup>
