@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;netstandard1.1;net5.0</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
+    <Version>0.6.2.1</Version>
+    <Authors>RafaelEstevam.Net</Authors>
+    <Company>RafaelEstevam.Net</Company>
+    <Product>Simple C# API client</Product>
+    <Description>A simple C# API client implementation</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/RafaelEstevamReis/SimpleAPI</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/RafaelEstevamReis/SimpleAPI</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Simple API client</PackageTags>
+    <PackageReleaseNotes>
+      See examples and documentation on the GitHub page
+      Paired with commit 
+      https://github.com/RafaelEstevamReis/SimpleAPI
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>..\Simple.API.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>
