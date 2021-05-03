@@ -12,11 +12,14 @@ namespace Simple.API
     public class Client
     {
         private readonly HttpClient httpClient;
+        /// <summary>
+        /// Base url of the API
+        /// </summary>
         public readonly Uri BaseUri;
         /// <summary>
         /// Creates a new insance
         /// </summary>
-        /// <param name="baseUrl">API base url</param>
+        /// <param name="baseUrl">Base url of the API</param>
         public Client(string baseUrl)
         {
             BaseUri = new Uri(baseUrl);
@@ -114,7 +117,6 @@ namespace Simple.API
         /// <summary>
         /// Sends a Put request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         public async Task PutAsync(string service, object value)
@@ -128,7 +130,6 @@ namespace Simple.API
         /// <summary>
         /// Sends a Patch request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         public async Task PatchAsync(string service, object value)
