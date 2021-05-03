@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace Simple.API
 {
+    /// <summary>
+    /// Entensions for the client
+    /// </summary>
     public static class ClientExtensions
     {
         /* GET */
@@ -11,6 +14,7 @@ namespace Simple.API
         /// Sends a Get request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="id">Service/action id</param>
         public static async Task<T> GetAsync<T>(this Client client, string service, int id)
@@ -21,6 +25,7 @@ namespace Simple.API
         /// Sends a Get request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="id">Service/action id</param>
         public static async Task<T> GetAsync<T>(this Client client, string service, Guid id)
@@ -34,6 +39,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Delete request
         /// </summary>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="id">Service/action id</param>
         public static async Task DeleteAsync(this Client client, string service, int id)
@@ -43,6 +49,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Delete request
         /// </summary>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="id">Service/action id</param>
         public static async Task DeleteAsync(this Client client, string service, Guid id)
@@ -56,6 +63,7 @@ namespace Simple.API
         /// Sends a Post request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -67,6 +75,7 @@ namespace Simple.API
         /// Sends a Post request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -78,6 +87,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Post request
         /// </summary>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -88,6 +98,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Post request
         /// </summary>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -101,7 +112,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Put request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -112,7 +123,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Put request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -126,7 +137,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Patch request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
@@ -137,7 +148,7 @@ namespace Simple.API
         /// <summary>
         /// Sends a Patch request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         /// <param name="id">Service/action id</param>
