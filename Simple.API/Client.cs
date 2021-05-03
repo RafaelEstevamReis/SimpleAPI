@@ -57,7 +57,7 @@ namespace Simple.API
         public async Task<T> GetAsync<T>(string service)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.GetAsync(uri);
+            using var response = await httpClient.GetAsync(uri);
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -87,7 +87,7 @@ namespace Simple.API
         public async Task DeleteAsync(string service)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.DeleteAsync(uri);
+            using var response = await httpClient.DeleteAsync(uri);
             processResponse(uri, response);
         }
 
@@ -123,7 +123,7 @@ namespace Simple.API
         public async Task<T> PostAsync<T>(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PostAsync(uri, buildContent(value));
+            using var response = await httpClient.PostAsync(uri, buildContent(value));
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -158,7 +158,7 @@ namespace Simple.API
         public async Task PostAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PostAsync(uri, buildContent(value));
+            using var response = await httpClient.PostAsync(uri, buildContent(value));
             processResponse(uri, response);
         }
 
@@ -171,7 +171,7 @@ namespace Simple.API
         public async Task<T> PostAsync<T>(string service, HttpContent content)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PostAsync(uri, content);
+            using var response = await httpClient.PostAsync(uri, content);
             return await processResponseAsync<T>(uri, response);
         }
         /// <summary>
@@ -189,7 +189,7 @@ namespace Simple.API
             }
 
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PostAsync(uri, formContent);
+            using var response = await httpClient.PostAsync(uri, formContent);
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -225,7 +225,7 @@ namespace Simple.API
         public async Task PutAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PutAsync(uri, buildContent(value));
+            using var response = await httpClient.PutAsync(uri, buildContent(value));
             processResponse(uri, response);
         }
 
@@ -261,7 +261,7 @@ namespace Simple.API
         public async Task PatchAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            var response = await httpClient.PatchAsync(uri, buildContent(value));
+            using var response = await httpClient.PatchAsync(uri, buildContent(value));
             processResponse(uri, response);
         }
 
