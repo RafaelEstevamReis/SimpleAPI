@@ -20,22 +20,6 @@
             Configures the underlying HttpClient
             </summary>
         </member>
-        <member name="M:Simple.API.Client.GetAsync``1(System.String,System.Int32)">
-            <summary>
-            Sends a Get request and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="id">Service/action id</param>
-        </member>
-        <member name="M:Simple.API.Client.GetAsync``1(System.String,System.Guid)">
-            <summary>
-            Sends a Get request and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="id">Service/action id</param>
-        </member>
         <member name="M:Simple.API.Client.GetAsync``1(System.String)">
             <summary>
             Sends a Get request and process the returned content
@@ -43,43 +27,11 @@
             <typeparam name="T">Return type</typeparam>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
         </member>
-        <member name="M:Simple.API.Client.DeleteAsync(System.String,System.Int32)">
-            <summary>
-            Sends a Delete request
-            </summary>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="id">Service/action id</param>
-        </member>
-        <member name="M:Simple.API.Client.DeleteAsync(System.String,System.Guid)">
-            <summary>
-            Sends a Delete request
-            </summary>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="id">Service/action id</param>
-        </member>
         <member name="M:Simple.API.Client.DeleteAsync(System.String)">
             <summary>
             Sends a Delete request
             </summary>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        </member>
-        <member name="M:Simple.API.Client.PostAsync``1(System.String,System.Object,System.Int32)">
-            <summary>
-            Sends a Post request and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="value">Value to be sent</param>
-            <param name="id">Service/action id</param>
-        </member>
-        <member name="M:Simple.API.Client.PostAsync``1(System.String,System.Object,System.Guid)">
-            <summary>
-            Sends a Post request and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="value">Value to be sent</param>
-            <param name="id">Service/action id</param>
         </member>
         <member name="M:Simple.API.Client.PostAsync``1(System.String,System.Object)">
             <summary>
@@ -182,6 +134,54 @@
             <typeparam name="T">Return type</typeparam>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.GetAsync``1(Simple.API.Client,System.String,System.Int32)">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.GetAsync``1(Simple.API.Client,System.String,System.Guid)">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.DeleteAsync(Simple.API.Client,System.String,System.Int32)">
+            <summary>
+            Sends a Delete request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.DeleteAsync(Simple.API.Client,System.String,System.Guid)">
+            <summary>
+            Sends a Delete request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.PostAsync``1(Simple.API.Client,System.String,System.Object,System.Int32)">
+            <summary>
+            Sends a Post request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="value">Value to be sent</param>
+            <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.PostAsync``1(Simple.API.Client,System.String,System.Object,System.Guid)">
+            <summary>
+            Sends a Post request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="value">Value to be sent</param>
+            <param name="id">Service/action id</param>
         </member>
     </members>
 </doc>
