@@ -34,26 +34,6 @@ namespace Simple.API
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="id">Service/action id</param>
-        public async Task<T> GetAsync<T>(string service, int id)
-        {
-            return await GetAsync<T>($"{service}/{id}");
-        }
-        /// <summary>
-        /// Sends a Get request and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="id">Service/action id</param>
-        public async Task<T> GetAsync<T>(string service, Guid id)
-        {
-            return await GetAsync<T>($"{service}/{id}");
-        }
-        /// <summary>
-        /// Sends a Get request and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         public async Task<T> GetAsync<T>(string service)
         {
             var uri = new Uri(BaseUri, service);
@@ -62,24 +42,6 @@ namespace Simple.API
         }
 
         /* DELETE */
-        /// <summary>
-        /// Sends a Delete request
-        /// </summary>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="id">Service/action id</param>
-        public async Task DeleteAsync(string service, int id)
-        {
-            await DeleteAsync($"{service}/{id}");
-        }
-        /// <summary>
-        /// Sends a Delete request
-        /// </summary>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="id">Service/action id</param>
-        public async Task DeleteAsync(string service, Guid id)
-        {
-            await DeleteAsync($"{service}/{id}");
-        }
         /// <summary>
         /// Sends a Delete request
         /// </summary>
@@ -98,28 +60,6 @@ namespace Simple.API
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task<T> PostAsync<T>(string service, object value, int id)
-        {
-            return await PostAsync<T>($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Post request and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task<T> PostAsync<T>(string service, object value, Guid id)
-        {
-            return await PostAsync<T>($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Post request and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
         public async Task<T> PostAsync<T>(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
@@ -130,29 +70,6 @@ namespace Simple.API
         /// <summary>
         /// Sends a Post request
         /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PostAsync(string service, object value, int id)
-        {
-            await PostAsync($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Post request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PostAsync(string service, object value, Guid id)
-        {
-            await PostAsync($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Post request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         public async Task PostAsync(string service, object value)
@@ -200,28 +117,6 @@ namespace Simple.API
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PutAsync(string service, object value, int id)
-        {
-            await PutAsync($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Put request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PutAsync(string service, object value, Guid id)
-        {
-            await PutAsync($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Put request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
         public async Task PutAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
@@ -230,28 +125,6 @@ namespace Simple.API
         }
 
         /* PATCH */
-        /// <summary>
-        /// Sends a Patch request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PatchAsync(string service, object value, int id)
-        {
-            await PatchAsync($"{service}/{id}", value);
-        }
-        /// <summary>
-        /// Sends a Patch request
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="value">Value to be sent</param>
-        /// <param name="id">Service/action id</param>
-        public async Task PatchAsync(string service, object value, Guid id)
-        {
-            await PatchAsync($"{service}/{id}", value);
-        }
         /// <summary>
         /// Sends a Patch request
         /// </summary>

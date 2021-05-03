@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Simple.API;
+using System;
 using System.Threading.Tasks;
 
 namespace Simple.Test
