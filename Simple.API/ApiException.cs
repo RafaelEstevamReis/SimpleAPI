@@ -4,10 +4,22 @@ using System.Net.Http;
 
 namespace Simple.API
 {
+    /// <summary>
+    /// Represents an erro StatusCode
+    /// </summary>
     public class ApiException : Exception
     {
+        /// <summary>
+        /// Resource used
+        /// </summary>
         public Uri Resource { get; }
+        /// <summary>
+        /// Status code returned
+        /// </summary>
         public HttpStatusCode StatusCode { get; }
+        /// <summary>
+        /// Response returned
+        /// </summary>
         public HttpResponseMessage Response { get; }
 
         //public ApiException() { }
