@@ -20,7 +20,7 @@ namespace Simple.Test
                 DoubleFloatPoint = 3.14
             };
 
-            API.Client client = new API.Client("https://httpbin.org/");
+            Client client = new Client("https://httpbin.org/");
 
             /* GET */
             // no params
