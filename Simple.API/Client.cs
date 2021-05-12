@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Simple.API
 {
     /// <summary>
-    /// Simple json-based api client
+    /// Simple json-based api client with more information
     /// </summary>
     public class Client
     {
@@ -95,18 +95,32 @@ namespace Simple.API
             return await processResponseAsync<T>(uri, response);
         }
         /// <summary>
-        /// Sends a Post request with specified content and process the returned content
+        /// Sends a Post request with Multipart Form Data content and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="values">Form values</param>
-        public async Task<T> FormPostAsync<T>(string service, KeyValuePair<string, string>[] values)
+        public async Task<T> MultipartFormPostAsync<T>(string service, KeyValuePair<string, string>[] values)
         {
             var formContent = new MultipartFormDataContent();
             foreach (var item in values)
             {
                 formContent.Add(new StringContent(item.Value), item.Key);
             }
+
+            var uri = new Uri(BaseUri, service);
+            using var response = await httpClient.PostAsync(uri, formContent);
+            return await processResponseAsync<T>(uri, response);
+        }
+        /// <summary>
+        /// Sends a Post request with Form Url Encoded content and process the returned content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="values">Form values</param>
+        public async Task<T> FormUrlEncodedPostAsync<T>(string service, KeyValuePair<string, string>[] values)
+        {
+            var formContent = new FormUrlEncodedContent(values);
 
             var uri = new Uri(BaseUri, service);
             using var response = await httpClient.PostAsync(uri, formContent);
