@@ -76,6 +76,16 @@ namespace Simple.API
         /// Sends a Post request
         /// </summary>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        public async Task<Response> PostAsync(string service)
+        {
+            var uri = new Uri(BaseUri, service);
+            using var response = await httpClient.PostAsync(uri, null);
+            return Response.Build(response);
+        }
+        /// <summary>
+        /// Sends a Post request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
         public async Task<Response> PostAsync(string service, object value)
         {
