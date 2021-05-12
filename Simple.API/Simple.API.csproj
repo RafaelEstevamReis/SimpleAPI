@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard1.1;net5.0;net45</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
-    <Version>1.2</Version>
+    <Version>1.3.0</Version>
     <Authors>RafaelEstevam.Net</Authors>
     <Company>RafaelEstevam.Net</Company>
     <Product>Simple C# API client</Product>
@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Simple API client</PackageTags>
     <PackageReleaseNotes>See examples and documentation on the GitHub page
-Paired with commit 5825607
+Paired with commit 2238997
 https://github.com/RafaelEstevamReis/SimpleAPI</PackageReleaseNotes>
   </PropertyGroup>
 
