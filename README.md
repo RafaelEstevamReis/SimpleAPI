@@ -43,6 +43,7 @@ How to GET a resource at `https://httpbin.org/anything/42`
 API.Client client = new API.Client("https://httpbin.org/");
 
 var getInt = await client.GetAsync<TestResponse>("anything", 42);
+var getParam = await client.GetAsync<TestResponse>("anything", new { id = 42 });
 ~~~
 
 
