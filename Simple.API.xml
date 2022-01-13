@@ -273,7 +273,7 @@
             </summary>
             <typeparam name="T">Return type</typeparam>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="values">Builds url get parameters</param>
+            <param name="p">Builds url get parameters</param>
         </member>
         <member name="M:Simple.API.ClientExtensions.DeleteAsync(Simple.API.Client,System.String,System.Int32)">
             <summary>
@@ -402,7 +402,7 @@
             </summary>
             <typeparam name="T">Return type</typeparam>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="values">Builds url get parameters</param>
+            <param name="p">Builds url get parameters</param>
         </member>
         <member name="M:Simple.API.ClientInfoExtensions.DeleteAsync(Simple.API.ClientInfo,System.String,System.Int32)">
             <summary>
@@ -493,6 +493,27 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
             <param name="id">Service/action id</param>
+        </member>
+        <member name="T:Simple.API.Helper">
+            <summary>
+            Helper class
+            </summary>
+        </member>
+        <member name="M:Simple.API.Helper.BuildUrlEncodedUrl(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Builds an UrlEncoded url
+            </summary>
+            <param name="service">Service name</param>
+            <param name="values">Parameteres to be encoded</param>
+            <returns>Url with parameters url encoded</returns>
+        </member>
+        <member name="M:Simple.API.Helper.BuildUrlEncodedUrl(System.String,System.Object)">
+            <summary>
+            Builds an UrlEncoded url
+            </summary>
+            <param name="service">Service name</param>
+            <param name="p">Object to extract parameters from</param>
+            <returns>Url with parameters url encoded</returns>
         </member>
         <member name="T:Simple.API.Response">
             <summary>

@@ -5,14 +5,35 @@ using System.Net;
 
 namespace Simple.API
 {
-    internal class Helper
+    /// <summary>
+    /// Helper class
+    /// </summary>
+    public static class Helper
     {
-        internal static string BuildUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
+        /// <summary>
+        /// Builds an UrlEncoded url
+        /// </summary>
+        /// <param name="service">Service name</param>
+        /// <param name="values">Parameteres to be encoded</param>
+        /// <returns>Url with parameters url encoded</returns>
+        public static string BuildUrlEncodedUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
+            => buildUrl(service, values);
+        /// <summary>
+        /// Builds an UrlEncoded url
+        /// </summary>
+        /// <param name="service">Service name</param>
+        /// <param name="p">Object to extract parameters from</param>
+        /// <returns>Url with parameters url encoded</returns>
+        public static string BuildUrlEncodedUrl(string service, object p)
+            => buildUrl(service, buildParams(p));
+
+
+        internal static string buildUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
         {
             string pars = string.Join("&", values.Select(pair => $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}"));
             return $"{service}?{pars}";
         }
-        internal static IEnumerable< KeyValuePair<string, string>> BuildParams(object p)
+        internal static IEnumerable< KeyValuePair<string, string>> buildParams(object p)
         {
 #if NETSTANDARD1_1
             throw new System.NotSupportedException("Unsuported on NETSTANDARD 1.1");

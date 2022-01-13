@@ -42,7 +42,7 @@ namespace Simple.API
         /// <param name="values">Url get parameters</param>
         public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, KeyValuePair<string, string>[] values)
         {
-            string url = Helper.BuildUrl(service, values);
+            string url = Helper.buildUrl(service, values);
             return await client.GetAsync<T>(url);
         }
 
@@ -51,10 +51,10 @@ namespace Simple.API
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="values">Builds url get parameters</param>
+        /// <param name="p">Builds url get parameters</param>
         public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, object p)
         {
-            string url = Helper.BuildUrl(service, Helper.BuildParams(p));
+            string url = Helper.buildUrl(service, Helper.buildParams(p));
             return await client.GetAsync<T>(url);
         }
 
