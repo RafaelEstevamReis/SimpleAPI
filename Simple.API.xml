@@ -259,6 +259,22 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="id">Service/action id</param>
         </member>
+        <member name="M:Simple.API.ClientExtensions.GetAsync``1(Simple.API.Client,System.String,System.Collections.Generic.KeyValuePair{System.String,System.String}[])">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Url get parameters</param>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.GetAsync``1(Simple.API.Client,System.String,System.Object)">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Builds url get parameters</param>
+        </member>
         <member name="M:Simple.API.ClientExtensions.DeleteAsync(Simple.API.Client,System.String,System.Int32)">
             <summary>
             Sends a Delete request
@@ -371,6 +387,22 @@
             <param name="client">API client to use</param>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.GetAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Generic.KeyValuePair{System.String,System.String}[])">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Url get parameters</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.GetAsync``1(Simple.API.ClientInfo,System.String,System.Object)">
+            <summary>
+            Sends a Get request and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Builds url get parameters</param>
         </member>
         <member name="M:Simple.API.ClientInfoExtensions.DeleteAsync(Simple.API.ClientInfo,System.String,System.Int32)">
             <summary>

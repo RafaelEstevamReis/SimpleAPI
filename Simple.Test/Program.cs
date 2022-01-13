@@ -29,6 +29,8 @@ namespace Simple.Test
             var getInt = await client.GetAsync<TestResponse>("anything", 42);
             // guid param
             var getGuid = await client.GetAsync<TestResponse>("anything", guid);
+            // object builded param
+            var t = await client.GetAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
 
             /* DELETE */
             // no params

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Simple.API
@@ -33,6 +34,29 @@ namespace Simple.API
             return await client.GetAsync<T>($"{service}/{id}");
         }
 
+        /// <summary>
+        /// Sends a Get request and process the returned content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="values">Url get parameters</param>
+        public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, KeyValuePair<string, string>[] values)
+        {
+            string url = Helper.BuildUrl(service, values);
+            return await client.GetAsync<T>(url);
+        }
+
+        /// <summary>
+        /// Sends a Get request and process the returned content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="values">Builds url get parameters</param>
+        public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, object p)
+        {
+            string url = Helper.BuildUrl(service, Helper.BuildParams(p));
+            return await client.GetAsync<T>(url);
+        }
 
         /* DELETE */
 
