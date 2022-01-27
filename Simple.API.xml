@@ -567,5 +567,38 @@
             Create a new isntance
             </summary>
         </member>
+        <member name="T:Simple.API.Retry">
+            <summary>
+            Class to retry ClientInfo Calls
+            </summary>
+        </member>
+        <member name="M:Simple.API.Retry.#ctor">
+            <summary>
+            Creates a new instance
+            </summary>
+        </member>
+        <member name="M:Simple.API.Retry.Register(System.Net.HttpStatusCode,System.Func{System.Boolean})">
+            <summary>
+            Register a ResponseCode handler
+            </summary>
+            <param name="responseCode">ResponseCode to trigger for</param>
+            <param name="action">Action to be executed. True to retry, False to pass</param>
+        </member>
+        <member name="M:Simple.API.Retry.Unregister(System.Net.HttpStatusCode)">
+            <summary>
+            Unregister a handler
+            </summary>
+        </member>
+        <member name="M:Simple.API.Retry.GetRegisteredHandlers">
+            <summary>
+            Get all registered handlers
+            </summary>
+        </member>
+        <member name="M:Simple.API.Retry.DoAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Exeutes a retriable call.
+            The call will retry once
+            </summary>
+        </member>
     </members>
 </doc>
