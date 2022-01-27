@@ -7,14 +7,14 @@ namespace Simple.TestWebApi.Controllers
     public class LoginController : ControllerBase
     {
         [HttpPost]
-        [Route("login")]
+        [Route("authenticate")]
         [AllowAnonymous]
         public IActionResult Authenticate([FromBody] Auth.Login model)
         {
             var user = Auth.User.Get(model.Username, model.Password, model.Mock_ReturnSuccess);
 
             if (user == null)
-                return NotFound(new { message = "Invalid credentials" });
+                return Unauthorized(new { message = "Invalid credentials" });
 
             var token = Auth.Token.GenerateToken(user);
             return Ok(new
