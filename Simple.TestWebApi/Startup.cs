@@ -64,7 +64,7 @@ namespace Simple.TestWebApi
                 c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { jwtSecurityScheme, new string[0] }
+                    { jwtSecurityScheme, System.Array.Empty<string>() }
                 });
                 // Normal swagger stuff
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple.TestWebApi", Version = "v1" });

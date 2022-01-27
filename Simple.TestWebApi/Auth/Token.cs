@@ -8,7 +8,7 @@ namespace Simple.TestWebApi.Auth
 {
     public static class Token
     {
-        public static string Secret = "1C81F686-DE03-4C23-A456-BA1744D4288F";
+        internal static string Secret = "1C81F686-DE03-4C23-A456-BA1744D4288F";
 
         public static string GenerateToken(User user)
         {
