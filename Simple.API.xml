@@ -222,6 +222,14 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="fields">Form values</param>
         </member>
+        <member name="M:Simple.API.ClientInfo.FormUrlEncodedPostAsync``1(System.String,System.Object)">
+            <summary>
+            Sends a Post request with Form Url Encoded content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Object with fields to be mapped</param>
+        </member>
         <member name="M:Simple.API.ClientInfo.PutAsync(System.String,System.Object)">
             <summary>
             Sends a Put request
@@ -546,6 +554,16 @@
             Gets or sets the status code of the HTTP response
             </summary>
         </member>
+        <member name="P:Simple.API.Response.ErrorResponseData">
+            <summary>
+            Gets string response on Non-SuccessStatusCode
+            </summary>
+        </member>
+        <member name="M:Simple.API.Response.ParseErrorResponseData``1">
+            <summary>
+            Parses json ErrorResponseData as `T`
+            </summary>
+        </member>
         <member name="M:Simple.API.Response.Build(System.Net.Http.HttpResponseMessage)">
             <summary>
             Create a new isntance
@@ -562,7 +580,7 @@
             Deserialized data
             </summary>
         </member>
-        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,`0)">
+        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,`0,System.String)">
             <summary>
             Create a new isntance
             </summary>
