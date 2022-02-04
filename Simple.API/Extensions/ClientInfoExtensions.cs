@@ -38,6 +38,7 @@ namespace Simple.API
         /// Sends a Get request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="values">Url get parameters</param>
         public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, KeyValuePair<string, string>[] values)
@@ -50,6 +51,7 @@ namespace Simple.API
         /// Sends a Get request and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
+        /// <param name="client">API client to use</param>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="p">Builds url get parameters</param>
         public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, object p)
