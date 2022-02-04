@@ -254,6 +254,11 @@
             Response received data
             </summary>
         </member>
+        <member name="P:Simple.API.ClientInfo.ResponseReceived.Received">
+            <summary>
+            DateTime of the response
+            </summary>
+        </member>
         <member name="P:Simple.API.ClientInfo.ResponseReceived.Uri">
             <summary>
             Request uri
@@ -262,6 +267,21 @@
         <member name="P:Simple.API.ClientInfo.ResponseReceived.Content">
             <summary>
             Response content
+            </summary>
+        </member>
+        <member name="P:Simple.API.ClientInfo.ResponseReceived.Success">
+            <summary>
+            Successful request
+            </summary>
+        </member>
+        <member name="P:Simple.API.ClientInfo.ResponseReceived.StatusCode">
+            <summary>
+            StatusCode of the response
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfo.ResponseReceived.ToString">
+            <summary>
+            Returns a string that represents the current object
             </summary>
         </member>
         <member name="T:Simple.API.ClientExtensions">
@@ -292,6 +312,7 @@
             Sends a Get request and process the returned content
             </summary>
             <typeparam name="T">Return type</typeparam>
+            <param name="client">API client to use</param>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="values">Url get parameters</param>
         </member>
@@ -300,6 +321,7 @@
             Sends a Get request and process the returned content
             </summary>
             <typeparam name="T">Return type</typeparam>
+            <param name="client">API client to use</param>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="p">Builds url get parameters</param>
         </member>
@@ -421,6 +443,7 @@
             Sends a Get request and process the returned content
             </summary>
             <typeparam name="T">Return type</typeparam>
+            <param name="client">API client to use</param>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="values">Url get parameters</param>
         </member>
@@ -429,6 +452,7 @@
             Sends a Get request and process the returned content
             </summary>
             <typeparam name="T">Return type</typeparam>
+            <param name="client">API client to use</param>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="p">Builds url get parameters</param>
         </member>
