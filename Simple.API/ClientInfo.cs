@@ -26,8 +26,13 @@ namespace Simple.API
         public ClientInfo(string baseUrl)
         {
             if (!baseUrl.EndsWith("/")) baseUrl += '/';
-             BaseUri = new Uri(baseUrl);
-            httpClient = new HttpClient();
+            BaseUri = new Uri(baseUrl);
+
+            httpClient = new HttpClient(new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
+
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json");
         }
         /// <summary>
@@ -243,7 +248,7 @@ namespace Simple.API
                 else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             }
             else
-            {                
+            {
                 errorData = content;
             }
 
