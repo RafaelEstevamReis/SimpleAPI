@@ -14,6 +14,11 @@ namespace Simple.API
     /// </summary>
     public class ClientInfo
     {
+        /// <summary>
+        /// Response content event
+        /// </summary>
+        public event EventHandler<ResponseReceived> ResponseDataReceived;
+
         private readonly HttpClient httpClient;
         /// <summary>
         /// Base url of the API
@@ -235,7 +240,7 @@ namespace Simple.API
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value);
             return new StringContent(jsonValue, Encoding.UTF8, "application/json");
         }
-        private static async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response)
+        private async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response)
         {
             T data = default;
 
@@ -244,6 +249,12 @@ namespace Simple.API
 
             if (response.IsSuccessStatusCode)
             {
+                ResponseDataReceived?.Invoke(this, new ResponseReceived()
+                {
+                    Uri = uri,
+                    Content = content,
+                });
+
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
                 else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             }
@@ -255,6 +266,20 @@ namespace Simple.API
             var d = Response<T>.Build(response, data, errorData);
 
             return d;
+        }
+        /// <summary>
+        /// Response received data
+        /// </summary>
+        public class ResponseReceived
+        {
+            /// <summary>
+            /// Request uri
+            /// </summary>
+            public Uri Uri { get; internal set; }
+            /// <summary>
+            /// Response content
+            /// </summary>
+            public string Content { get; internal set; }
         }
     }
 }
