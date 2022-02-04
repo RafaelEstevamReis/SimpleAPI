@@ -247,14 +247,17 @@ namespace Simple.API
             string content = await response.Content.ReadAsStringAsync();
             string errorData = null;
 
+            ResponseDataReceived?.Invoke(this, new ResponseReceived()
+            {
+                Received = DateTime.UtcNow,
+                Uri = uri,
+                Success = response.IsSuccessStatusCode,
+                StatusCode = (int)response.StatusCode,
+                Content = content,
+            });
+
             if (response.IsSuccessStatusCode)
             {
-                ResponseDataReceived?.Invoke(this, new ResponseReceived()
-                {
-                    Uri = uri,
-                    Content = content,
-                });
-
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
                 else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             }
@@ -267,19 +270,40 @@ namespace Simple.API
 
             return d;
         }
+
         /// <summary>
         /// Response received data
         /// </summary>
         public class ResponseReceived
         {
             /// <summary>
+            /// DateTime of the response
+            /// </summary>
+            public DateTime Received { get; set; }
+            /// <summary>
             /// Request uri
             /// </summary>
-            public Uri Uri { get; internal set; }
+            public Uri Uri { get; set; }
             /// <summary>
             /// Response content
             /// </summary>
-            public string Content { get; internal set; }
+            public string Content { get; set; }
+            /// <summary>
+            /// Successful request
+            /// </summary>
+            public bool Success { get; set; }
+            /// <summary>
+            /// StatusCode of the response
+            /// </summary>
+            public int StatusCode { get; set; }
+
+            /// <summary>
+            /// Returns a string that represents the current object
+            /// </summary>
+            public override string ToString()
+            {
+                return $"{Received:G} {Uri.PathAndQuery} [{StatusCode}] {Content}";
+            }
         }
     }
 }
