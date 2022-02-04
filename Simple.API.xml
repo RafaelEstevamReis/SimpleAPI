@@ -116,6 +116,11 @@
             Simple json-based api client
             </summary>
         </member>
+        <member name="E:Simple.API.ClientInfo.ResponseDataReceived">
+            <summary>
+            Response content event
+            </summary>
+        </member>
         <member name="F:Simple.API.ClientInfo.BaseUri">
             <summary>
             Base url of the API
@@ -243,6 +248,21 @@
             </summary>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
+        </member>
+        <member name="T:Simple.API.ClientInfo.ResponseReceived">
+            <summary>
+            Response received data
+            </summary>
+        </member>
+        <member name="P:Simple.API.ClientInfo.ResponseReceived.Uri">
+            <summary>
+            Request uri
+            </summary>
+        </member>
+        <member name="P:Simple.API.ClientInfo.ResponseReceived.Content">
+            <summary>
+            Response content
+            </summary>
         </member>
         <member name="T:Simple.API.ClientExtensions">
             <summary>
