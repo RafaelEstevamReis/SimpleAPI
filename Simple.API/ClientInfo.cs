@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,7 +114,7 @@ namespace Simple.API
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="fields">Form values</param>
-        
+
         public async Task<Response<T>> MultipartFormPostAsync<T>(string service, Dictionary<string, string> fields)
         {
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
@@ -149,14 +151,14 @@ namespace Simple.API
             using var response = await httpClient.PostAsync(uri, formContent);
             return await processResponseAsync<T>(uri, response);
         }
-        
+
         /// <summary>
         /// Sends a Post request with Form Url Encoded content and process the returned content
         /// </summary>
         /// <typeparam name="T">Return type</typeparam>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="fields">Form values</param>
-        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, Dictionary<string,string> fields)
+        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, Dictionary<string, string> fields)
         {
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
             foreach (var pair in fields) lst.Add(new KeyValuePair<string, string>(pair.Key, pair.Value));
@@ -188,6 +190,14 @@ namespace Simple.API
             using var response = await httpClient.PostAsync(uri, formContent);
             return await processResponseAsync<T>(uri, response);
         }
+        /// <summary>
+        /// Sends a Post request with Form Url Encoded content and process the returned content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="values">Object with fields to be mapped</param>
+        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, object values)
+            => await FormUrlEncodedPostAsync<T>(service, Helper.buildParams(values));
 
         /* PUT */
         /// <summary>
@@ -224,14 +234,22 @@ namespace Simple.API
         {
             T data = default;
 
+            string content = await response.Content.ReadAsStringAsync();
+            string errorData = null;
+
             if (response.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                if (typeof(T) == typeof(string)) data = (T)(object)json;
-                else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+                if (typeof(T) == typeof(string)) data = (T)(object)content;
+                else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+            }
+            else
+            {                
+                errorData = content;
             }
 
-            return Response<T>.Build(response, data);
+            var d = Response<T>.Build(response, data, errorData);
+
+            return d;
         }
     }
 }

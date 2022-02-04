@@ -30,19 +30,34 @@ namespace Simple.API
         /// Gets or sets the status code of the HTTP response
         /// </summary>
         public HttpStatusCode StatusCode { get; protected set; }
+        /// <summary>
+        /// Gets string response on Non-SuccessStatusCode
+        /// </summary>
+        public string ErrorResponseData { get; protected set; }
+        /// <summary>
+        /// Parses json ErrorResponseData as `T`
+        /// </summary>
+        public T ParseErrorResponseData<T>()
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(ErrorResponseData);
+        }
 
         /// <summary>
         /// Create a new isntance
         /// </summary>
         public static Response Build(HttpResponseMessage response)
         {
+            string errorData = null;
+            if(!response.IsSuccessStatusCode) errorData = response.Content.ReadAsStringAsync().Result;
+
             return new Response()
             {
                 Headers = response.Headers,
                 RequestMessage = response.RequestMessage,
                 IsSuccessStatusCode = response.IsSuccessStatusCode,
                 ReasonPhrase = response.ReasonPhrase,
-                StatusCode = response.StatusCode
+                StatusCode = response.StatusCode,
+                ErrorResponseData = errorData,
             };
         }
     }
@@ -60,7 +75,7 @@ namespace Simple.API
         /// <summary>
         /// Create a new isntance
         /// </summary>
-        public static Response<T> Build(HttpResponseMessage response, T data)
+        public static Response<T> Build(HttpResponseMessage response, T data, string errorData)
         {
             return new Response<T>()
             {
@@ -69,7 +84,8 @@ namespace Simple.API
                 RequestMessage = response.RequestMessage,
                 IsSuccessStatusCode = response.IsSuccessStatusCode,
                 ReasonPhrase = response.ReasonPhrase,
-                StatusCode = response.StatusCode
+                StatusCode = response.StatusCode,
+                ErrorResponseData = errorData,
             };
         }
     }
