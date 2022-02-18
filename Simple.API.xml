@@ -577,6 +577,11 @@
             Gets the collection of HTTP response headers
             </summary>
         </member>
+        <member name="P:Simple.API.Response.ContentHeaders">
+            <summary>
+            Gets the collection of HTTP content headers
+            </summary>
+        </member>
         <member name="P:Simple.API.Response.RequestMessage">
             <summary>
             Gets or sets the request message which led to this response message
@@ -624,7 +629,7 @@
             Deserialized data
             </summary>
         </member>
-        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,`0,System.String)">
+        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,System.Net.Http.Headers.HttpContentHeaders,`0,System.String)">
             <summary>
             Create a new isntance
             </summary>
