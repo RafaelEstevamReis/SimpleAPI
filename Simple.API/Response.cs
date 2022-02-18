@@ -14,6 +14,10 @@ namespace Simple.API
         /// </summary>
         public HttpResponseHeaders Headers { get; protected set; }
         /// <summary>
+        /// Gets the collection of HTTP content headers
+        /// </summary>
+        public HttpContentHeaders ContentHeaders { get; protected set; }
+        /// <summary>
         /// Gets or sets the request message which led to this response message
         /// </summary>
         public HttpRequestMessage RequestMessage { get; protected set; }
@@ -34,6 +38,7 @@ namespace Simple.API
         /// Gets string response on Non-SuccessStatusCode
         /// </summary>
         public string ErrorResponseData { get; protected set; }
+
         /// <summary>
         /// Parses json ErrorResponseData as `T`
         /// </summary>
@@ -48,11 +53,12 @@ namespace Simple.API
         public static Response Build(HttpResponseMessage response)
         {
             string errorData = null;
-            if(!response.IsSuccessStatusCode) errorData = response.Content.ReadAsStringAsync().Result;
+            if (!response.IsSuccessStatusCode) errorData = response.Content.ReadAsStringAsync().Result;
 
             return new Response()
             {
                 Headers = response.Headers,
+                ContentHeaders = response.Content.Headers,
                 RequestMessage = response.RequestMessage,
                 IsSuccessStatusCode = response.IsSuccessStatusCode,
                 ReasonPhrase = response.ReasonPhrase,
@@ -75,12 +81,13 @@ namespace Simple.API
         /// <summary>
         /// Create a new isntance
         /// </summary>
-        public static Response<T> Build(HttpResponseMessage response, T data, string errorData)
+        public static Response<T> Build(HttpResponseMessage response, HttpContentHeaders headers, T data, string errorData)
         {
             return new Response<T>()
             {
                 Data = data,
                 Headers = response.Headers,
+                ContentHeaders = headers,
                 RequestMessage = response.RequestMessage,
                 IsSuccessStatusCode = response.IsSuccessStatusCode,
                 ReasonPhrase = response.ReasonPhrase,

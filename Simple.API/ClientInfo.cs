@@ -247,6 +247,8 @@ namespace Simple.API
             string content = await response.Content.ReadAsStringAsync();
             string errorData = null;
 
+            var contentHeaders = response.Content.Headers;
+
             ResponseDataReceived?.Invoke(this, new ResponseReceived()
             {
                 Received = DateTime.UtcNow,
@@ -266,7 +268,7 @@ namespace Simple.API
                 errorData = content;
             }
 
-            var d = Response<T>.Build(response, data, errorData);
+            var d = Response<T>.Build(response, contentHeaders, data, errorData);
 
             return d;
         }
