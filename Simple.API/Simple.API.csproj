@@ -13,10 +13,9 @@
 		<RepositoryUrl>https://github.com/RafaelEstevamReis/SimpleAPI</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Simple API client</PackageTags>
-		<PackageReleaseNotes>
-			See examples and documentation on the GitHub page
-			Paired with commit 8621835
-			https://github.com/RafaelEstevamReis/SimpleAPI
+		<PackageReleaseNotes>See examples and documentation on the GitHub page
+Paired with commit 8621835
+https://github.com/RafaelEstevamReis/SimpleAPI
 		</PackageReleaseNotes>
 	</PropertyGroup>
 
