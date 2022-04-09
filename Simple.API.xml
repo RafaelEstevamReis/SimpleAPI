@@ -289,6 +289,21 @@
             Entensions for the client
             </summary>
         </member>
+        <member name="M:Simple.API.ClientExtensions.SetAuthorization(Simple.API.Client,System.String)">
+            <summary>
+            Set Authorization header
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.SetAuthorizationBearer(Simple.API.Client,System.String)">
+            <summary>
+            Set Authorization header with a Bearer token
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientExtensions.RemoveAuthorization(Simple.API.Client)">
+            <summary>
+            Remove Authorization header
+            </summary>
+        </member>
         <member name="M:Simple.API.ClientExtensions.GetAsync``1(Simple.API.Client,System.String,System.Int32)">
             <summary>
             Sends a Get request and process the returned content
@@ -418,6 +433,21 @@
         <member name="T:Simple.API.ClientInfoExtensions">
             <summary>
             Entensions for the client
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.SetAuthorization(Simple.API.ClientInfo,System.String)">
+            <summary>
+            Set Authorization header
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.SetAuthorizationBearer(Simple.API.ClientInfo,System.String)">
+            <summary>
+            Set Authorization header with a Bearer token
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.RemoveAuthorization(Simple.API.ClientInfo)">
+            <summary>
+            Remove Authorization header
             </summary>
         </member>
         <member name="M:Simple.API.ClientInfoExtensions.GetAsync``1(Simple.API.ClientInfo,System.String,System.Int32)">
@@ -566,6 +596,101 @@
             <param name="service">Service name</param>
             <param name="p">Object to extract parameters from</param>
             <returns>Url with parameters url encoded</returns>
+        </member>
+        <member name="T:Simple.API.JwtBase">
+            <summary>
+            A base for JWT decoding
+            </summary>
+        </member>
+        <member name="P:Simple.API.JwtBase.Header">
+            <summary>
+            JWT Header text
+            </summary>
+        </member>
+        <member name="P:Simple.API.JwtBase.Payload">
+            <summary>
+            JWT Payload text
+            </summary>
+        </member>
+        <member name="P:Simple.API.JwtBase.Signature">
+            <summary>
+            JWT signature bytes
+            </summary>
+        </member>
+        <member name="M:Simple.API.JwtBase.ParseText(System.String)">
+            <summary>
+            Parses JWT
+            </summary>
+        </member>
+        <member name="T:Simple.API.JWT`1">
+            <summary>
+            A base for JWT decoding
+            </summary>
+        </member>
+        <member name="T:Simple.API.JWT">
+            <summary>
+            A JWT model for decoding
+            </summary>
+        </member>
+        <member name="P:Simple.API.JWT.Content">
+            <summary>
+            JWT generic content
+            </summary>
+        </member>
+        <member name="M:Simple.API.JWT.Parse(System.String)">
+            <summary>
+            Parse generic JWT
+            </summary>
+        </member>
+        <member name="T:Simple.API.GenericJwt">
+            <summary>
+            JWT with rfc7519 recomended properties
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.iss">
+            <summary>
+            Issuer
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.exp">
+            <summary>
+            Expiration Time
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.iat">
+            <summary>
+            Issued At
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.nbf">
+            <summary>
+            Not Before
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.sub">
+            <summary>
+            Subject
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.aud">
+            <summary>
+            Audience
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.GetExp">
+            <summary>
+            Expiration Time
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.GetIat">
+            <summary>
+            Issued At
+            </summary>
+        </member>
+        <member name="P:Simple.API.GenericJwt.GetNbf">
+            <summary>
+            Not Before
+            </summary>
         </member>
         <member name="T:Simple.API.Response">
             <summary>
