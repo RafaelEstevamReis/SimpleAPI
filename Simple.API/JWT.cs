@@ -9,11 +9,21 @@ namespace Simple.API
     public class JwtBase
     {
         protected JwtBase() { }
-
+        /// <summary>
+        /// JWT Header text
+        /// </summary>
         public string Header { get; protected set; }
+        /// <summary>
+        /// JWT Payload text
+        /// </summary>
         public string Payload { get; protected set; }
+        /// <summary>
+        /// JWT signature bytes
+        /// </summary>
         public byte[] Signature { get; protected set; }
-
+        /// <summary>
+        /// Parses JWT
+        /// </summary>
         public static JwtBase ParseText(string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -82,8 +92,13 @@ namespace Simple.API
     /// </summary>
     public class JWT : JwtBase
     {
+        /// <summary>
+        /// JWT generic content
+        /// </summary>
         public GenericJwt Content { get; private set; }
-
+        /// <summary>
+        /// Parse generic JWT
+        /// </summary>
         public static JWT Parse(string token)
         {
             var jc = JWT<GenericJwt>.Parse(token);
