@@ -261,6 +261,17 @@ namespace Simple.API
             if (response.IsSuccessStatusCode)
             {
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
+                if (typeof(T) == typeof(JWT))
+                {
+                    if (content.Contains("\""))
+                    {
+                        data = (T)(object)JWT.Parse(content.Replace("\"", ""));
+                    }
+                    else
+                    {
+                        data = (T)(object)JWT.Parse(content);
+                    }
+                }
                 else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             }
             else
