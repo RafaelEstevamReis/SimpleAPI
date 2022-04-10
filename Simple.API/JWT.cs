@@ -46,8 +46,10 @@ namespace Simple.API
             var arr = convertFromBase64String(b64);
             return Encoding.UTF8.GetString(arr, 0, arr.Length);
         }
+        
         private static byte[] convertFromBase64String(string input)
         {
+            // B64 fix
             // https://github.com/dotnet/runtime/issues/26678
             if (string.IsNullOrWhiteSpace(input)) return null;
             try
@@ -71,8 +73,13 @@ namespace Simple.API
     public class JWT<T>
         : JwtBase
     {
+        /// <summary>
+        /// JWT content
+        /// </summary>
         public T Content { get; private set; }
-
+        /// <summary>
+        /// Parse JWT with T content
+        /// </summary>
         public static JWT<T> Parse(string token)
         {
             var jwt = ParseText(token);
