@@ -627,6 +627,16 @@
             A base for JWT decoding
             </summary>
         </member>
+        <member name="P:Simple.API.JWT`1.Content">
+            <summary>
+            JWT content
+            </summary>
+        </member>
+        <member name="M:Simple.API.JWT`1.Parse(System.String)">
+            <summary>
+            Parse JWT with T content
+            </summary>
+        </member>
         <member name="T:Simple.API.JWT">
             <summary>
             A JWT model for decoding
