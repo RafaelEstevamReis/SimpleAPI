@@ -261,7 +261,7 @@ namespace Simple.API
             if (response.IsSuccessStatusCode)
             {
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
-                if (typeof(T) == typeof(JWT))
+                else if (typeof(T) == typeof(JWT))
                 {
                     if (content.Contains("\""))
                     {
