@@ -27,7 +27,6 @@ namespace Simple.API
         public static string BuildUrlEncodedUrl(string service, object p)
             => buildUrl(service, buildParams(p));
 
-
         internal static string buildUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
         {
             string pars = string.Join("&", values.Select(pair => $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}"));
