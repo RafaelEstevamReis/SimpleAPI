@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -28,15 +27,16 @@ namespace Simple.API
         /// Creates a new insance
         /// </summary>
         /// <param name="baseUrl">Base url of the API</param>
-        public ClientInfo(string baseUrl)
+        /// <param name="clientHandler">Optional HttpClientHandler to configure</param>
+        public ClientInfo(string baseUrl, HttpClientHandler clientHandler = null)
         {
             if (!baseUrl.EndsWith("/")) baseUrl += '/';
             BaseUri = new Uri(baseUrl);
 
-            httpClient = new HttpClient(new HttpClientHandler()
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
+            if (clientHandler == null) clientHandler = new HttpClientHandler();
+            clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            httpClient = new HttpClient(clientHandler);
 
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json");
         }
