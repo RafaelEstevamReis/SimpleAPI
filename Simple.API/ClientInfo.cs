@@ -45,6 +45,40 @@ namespace Simple.API
         /// </summary>
         public void ConfigureHttpClient(Action<HttpClient> client) => client(httpClient);
 
+        /// <summary>
+        /// Set Authorization header
+        /// </summary>
+        public void SetAuthorization(string auth)
+            => SetHeader("Authorization", auth);
+        /// <summary>
+        /// Set Authorization header with a Bearer token
+        /// </summary>
+        public void SetAuthorizationBearer(string token)
+            => SetHeader("Authorization", "Bearer " + token);
+
+        /// <summary>
+        /// Remove Authorization header
+        /// </summary>
+        public void RemoveAuthorization()
+        {
+            lock (httpClient)
+            {
+                httpClient.DefaultRequestHeaders.Remove("Authorization");
+            }
+        }
+
+        /// <summary>
+        /// Set DefaultRequestHeaders
+        /// </summary>
+        public void SetHeader(string key, string value)
+        {
+            lock (httpClient)
+            {
+                httpClient.DefaultRequestHeaders.Remove(key);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, value);
+            }
+        }
+
         /* GET */
         /// <summary>
         /// Sends a Get request and process the returned content

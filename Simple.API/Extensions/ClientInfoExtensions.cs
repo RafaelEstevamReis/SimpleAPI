@@ -9,39 +9,6 @@ namespace Simple.API
     /// </summary>
     public static class ClientInfoExtensions
     {
-        /// <summary>
-        /// Set Authorization header
-        /// </summary>
-        public static void SetAuthorization(this ClientInfo client, string auth)
-        {
-            client.ConfigureHttpClient(c =>
-            {
-                c.DefaultRequestHeaders.Remove("Authorization");
-                c.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", auth);
-            });
-        }
-        /// <summary>
-        /// Set Authorization header with a Bearer token
-        /// </summary>
-        public static void SetAuthorizationBearer(this ClientInfo client, string token)
-        {
-            client.ConfigureHttpClient(c =>
-            {
-                c.DefaultRequestHeaders.Remove("Authorization");
-                c.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "Bearer " + token);
-            });
-        }
-        /// <summary>
-        /// Remove Authorization header
-        /// </summary>
-        public static void RemoveAuthorization(this ClientInfo client)
-        {
-            client.ConfigureHttpClient(c =>
-            {
-                c.DefaultRequestHeaders.Remove("Authorization");
-            });
-        }
-
         /* GET */
         /// <summary>
         /// Sends a Get request and process the returned content
