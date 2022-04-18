@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -277,6 +278,20 @@ namespace Simple.API
         /// <param name="value">Object with fields to be mapped</param>
         public async Task<Response> OptionsAsync(string service, object value)
             => await OptionsAsync(service, Helper.buildParams(value));
+
+#if !NETSTANDARD1_1
+        /// <summary>
+        /// Sends an Options request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="headers">Headers to be sent</param>
+        public async Task<Response> OptionsAsync(string service, IEnumerable<(string, string)> headers)
+        {
+            var kp = headers.Select(p => new KeyValuePair<string, string>(p.Item1, p.Item2));
+            return await OptionsAsync(service, kp);
+        }
+#endif
+
         /// <summary>
         /// Sends an Options request
         /// </summary>
