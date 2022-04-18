@@ -35,6 +35,8 @@ namespace Simple.API
         }
         internal static IEnumerable< KeyValuePair<string, string>> buildParams(object p)
         {
+            if (p == null) yield break; // Empty list
+
 #if NETSTANDARD1_1
             throw new System.NotSupportedException("Unsuported on NETSTANDARD 1.1");
 #else
