@@ -270,6 +270,27 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
         </member>
+        <member name="M:Simple.API.ClientInfo.OptionsAsync(System.String,System.Object)">
+            <summary>
+            Sends an Options request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="value">Object with fields to be mapped</param>
+        </member>
+        <member name="M:Simple.API.ClientInfo.OptionsAsync(System.String,System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})">
+            <summary>
+            Sends an Options request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="headers">Headers to be sent</param>
+        </member>
+        <member name="M:Simple.API.ClientInfo.OptionsAsync(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Sends an Options request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="headers">Headers to be sent</param>
+        </member>
         <member name="T:Simple.API.ClientInfo.ResponseReceived">
             <summary>
             Response received data
