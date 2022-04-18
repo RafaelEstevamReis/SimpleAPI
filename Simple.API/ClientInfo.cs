@@ -269,6 +269,33 @@ namespace Simple.API
             return Response.Build(response);
         }
 
+        /* OPTIONS */
+        /// <summary>
+        /// Sends an Options request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="value">Object with fields to be mapped</param>
+        public async Task<Response> OptionsAsync(string service, object value)
+            => await OptionsAsync(service, Helper.buildParams(value));
+        /// <summary>
+        /// Sends an Options request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="headers">Headers to be sent</param>
+        public async Task<Response> OptionsAsync(string service, IEnumerable<KeyValuePair<string, string>> headers)
+        {
+            var uri = new Uri(BaseUri, service);
+
+            var message = new HttpRequestMessage(HttpMethod.Options, uri);
+            foreach (var pair in headers)
+            {
+                message.Headers.Add(pair.Key, pair.Value);
+            }
+
+            var response = await httpClient.SendAsync(message);
+            return Response.Build(response);
+        }
+
         private HttpContent buildContent(object value)
         {
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value);
