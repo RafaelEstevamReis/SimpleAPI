@@ -126,15 +126,36 @@
             Base url of the API
             </summary>
         </member>
-        <member name="M:Simple.API.ClientInfo.#ctor(System.String)">
+        <member name="M:Simple.API.ClientInfo.#ctor(System.String,System.Net.Http.HttpClientHandler)">
             <summary>
             Creates a new insance
             </summary>
             <param name="baseUrl">Base url of the API</param>
+            <param name="clientHandler">Optional HttpClientHandler to configure</param>
         </member>
         <member name="M:Simple.API.ClientInfo.ConfigureHttpClient(System.Action{System.Net.Http.HttpClient})">
             <summary>
             Configures the underlying HttpClient
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfo.SetAuthorization(System.String)">
+            <summary>
+            Set Authorization header
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfo.SetAuthorizationBearer(System.String)">
+            <summary>
+            Set Authorization header with a Bearer token
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfo.RemoveAuthorization">
+            <summary>
+            Remove Authorization header
+            </summary>
+        </member>
+        <member name="M:Simple.API.ClientInfo.SetHeader(System.String,System.String)">
+            <summary>
+            Set DefaultRequestHeaders
             </summary>
         </member>
         <member name="M:Simple.API.ClientInfo.GetAsync``1(System.String)">
@@ -433,21 +454,6 @@
         <member name="T:Simple.API.ClientInfoExtensions">
             <summary>
             Entensions for the client
-            </summary>
-        </member>
-        <member name="M:Simple.API.ClientInfoExtensions.SetAuthorization(Simple.API.ClientInfo,System.String)">
-            <summary>
-            Set Authorization header
-            </summary>
-        </member>
-        <member name="M:Simple.API.ClientInfoExtensions.SetAuthorizationBearer(Simple.API.ClientInfo,System.String)">
-            <summary>
-            Set Authorization header with a Bearer token
-            </summary>
-        </member>
-        <member name="M:Simple.API.ClientInfoExtensions.RemoveAuthorization(Simple.API.ClientInfo)">
-            <summary>
-            Remove Authorization header
             </summary>
         </member>
         <member name="M:Simple.API.ClientInfoExtensions.GetAsync``1(Simple.API.ClientInfo,System.String,System.Int32)">
