@@ -320,7 +320,12 @@ namespace Simple.API
         {
             T data = default;
 
-            string content = await response.Content.ReadAsStringAsync();
+            bool binary = typeof(T) == typeof(byte[]);
+
+            string content = null;
+            if (binary) data = (T)(object)await response.Content.ReadAsByteArrayAsync();
+            else content = await response.Content.ReadAsStringAsync();
+
             string errorData = null;
 
             var contentHeaders = response.Content.Headers;
@@ -334,8 +339,19 @@ namespace Simple.API
                 Content = content,
             });
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
+                errorData = content;
+            }
+            else if (!binary)
+            {
+                // Can be encoded 
+                if (content.StartsWith("%7B"))
+                {
+                    // URLEncoded json
+                    content = WebUtility.UrlDecode(content);
+                }
+
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
                 else if (typeof(T) == typeof(JWT))
                 {
@@ -349,10 +365,7 @@ namespace Simple.API
                     }
                 }
                 else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
-            }
-            else
-            {
-                errorData = content;
+
             }
 
             var d = Response<T>.Build(response, contentHeaders, data, errorData);
