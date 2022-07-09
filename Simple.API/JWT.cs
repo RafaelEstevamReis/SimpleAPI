@@ -10,6 +10,11 @@ namespace Simple.API
     {
         protected JwtBase() { }
         /// <summary>
+        /// Original parsed Token
+        /// </summary>
+        public string OriginalToken { get; protected set; }
+
+        /// <summary>
         /// JWT Header text
         /// </summary>
         public string Header { get; protected set; }
@@ -39,6 +44,7 @@ namespace Simple.API
                 Header = getB64(parts[0]),
                 Payload = getB64(parts[1]),
                 Signature = convertFromBase64String(parts[2]),
+                OriginalToken = token,
             };
         }
         private static string getB64(string b64)
@@ -46,7 +52,7 @@ namespace Simple.API
             var arr = convertFromBase64String(b64);
             return Encoding.UTF8.GetString(arr, 0, arr.Length);
         }
-        
+
         private static byte[] convertFromBase64String(string input)
         {
             // B64 fix
@@ -90,6 +96,7 @@ namespace Simple.API
                 Payload = jwt.Payload,
                 Signature = jwt.Signature,
                 Content = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jwt.Payload),
+                OriginalToken = token,
             };
             return j;
         }
@@ -115,6 +122,7 @@ namespace Simple.API
                 Payload = jc.Payload,
                 Signature = jc.Signature,
                 Content = jc.Content,
+                OriginalToken = token,
             };
         }
     }

@@ -629,6 +629,11 @@
             A base for JWT decoding
             </summary>
         </member>
+        <member name="P:Simple.API.JwtBase.OriginalToken">
+            <summary>
+            Original parsed Token
+            </summary>
+        </member>
         <member name="P:Simple.API.JwtBase.Header">
             <summary>
             JWT Header text
