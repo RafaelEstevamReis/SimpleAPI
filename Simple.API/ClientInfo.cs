@@ -117,7 +117,11 @@ namespace Simple.API
         public async Task<Response<T>> PostAsync<T>(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, buildContent(value));
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = buildJsonContent(value);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -128,7 +132,11 @@ namespace Simple.API
         public async Task<Response> PostAsync(string service)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, null);
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            // no content
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return Response.Build(response);
         }
         /// <summary>
@@ -139,7 +147,11 @@ namespace Simple.API
         public async Task<Response> PostAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, buildContent(value));
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = buildJsonContent(value);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return Response.Build(response);
         }
 
@@ -152,7 +164,11 @@ namespace Simple.API
         public async Task<Response<T>> PostAsync<T>(string service, HttpContent content)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, content);
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = content;
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+            
             return await processResponseAsync<T>(uri, response);
         }
         /// <summary>
@@ -188,14 +204,17 @@ namespace Simple.API
         /// <param name="fields">Form values</param>
         public async Task<Response<T>> MultipartFormPostAsync<T>(string service, IEnumerable<KeyValuePair<string, string>> fields)
         {
+            var uri = new Uri(BaseUri, service);
             var formContent = new MultipartFormDataContent();
             foreach (var item in fields)
             {
                 formContent.Add(new StringContent(item.Value), item.Key);
             }
 
-            var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, formContent);
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = formContent;
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -231,10 +250,12 @@ namespace Simple.API
         /// <param name="fields">Form values</param>
         public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, IEnumerable<KeyValuePair<string, string>> fields)
         {
-            var formContent = new FormUrlEncodedContent(fields);
-
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PostAsync(uri, formContent);
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = new FormUrlEncodedContent(fields);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return await processResponseAsync<T>(uri, response);
         }
         /// <summary>
@@ -256,7 +277,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
-            msg.Content = buildContent(value);
+            msg.Content = buildJsonContent(value);
             using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
         }
@@ -272,7 +293,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
-            msg.Content = buildContent(value);
+            msg.Content = buildJsonContent(value);
             using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
 
             return Response.Build(response);
@@ -320,7 +341,7 @@ namespace Simple.API
             return Response.Build(response);
         }
 
-        private HttpContent buildContent(object value)
+        private HttpContent buildJsonContent(object value)
         {
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value);
             return new StringContent(jsonValue, Encoding.UTF8, "application/json");
