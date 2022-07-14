@@ -329,10 +329,19 @@ namespace Simple.API
         {
             T data = default;
 
-            bool binary = typeof(T) == typeof(byte[]);
+            bool binary = false;
 
             string content = null;
-            if (binary) data = (T)(object)await response.Content.ReadAsByteArrayAsync();
+            if (typeof(T) == typeof(byte[]))
+            {
+                data = (T)(object)await response.Content.ReadAsByteArrayAsync();
+                binary = true;
+            }
+            else if(typeof(T) == typeof(System.IO.Stream))
+            {
+                data = (T)(object)await response.Content.ReadAsStreamAsync();
+                binary = true;
+            }
             else content = await response.Content.ReadAsStringAsync();
 
             string errorData = null;
