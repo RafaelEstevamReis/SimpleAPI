@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -90,8 +89,8 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Get, uri);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-            return await processResponseAsync<T>(uri, response);
+
+            return await sendMessageAsync<T>(uri, msg);
         }
 
         /* DELETE */
@@ -103,8 +102,8 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Delete, uri);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-            return Response.Build(response);
+
+            return await sendMessageAsync(msg);
         }
 
         /* POST */
@@ -120,9 +119,8 @@ namespace Simple.API
 
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
             msg.Content = buildJsonContent(value);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
 
-            return await processResponseAsync<T>(uri, response);
+            return await sendMessageAsync<T>(uri, msg);
         }
 
         /// <summary>
@@ -133,7 +131,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
 
-            return await postAsync<object>(uri, null);
+            return await postAsync(uri, null);
         }
         /// <summary>
         /// Sends a Post request
@@ -145,97 +143,8 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
             var content = buildJsonContent(value);
 
-            return await postAsync<object>(uri, content);
+            return await postAsync(uri, content);
         }
-
-        /// <summary>
-        /// Sends a Post request with Multipart Form Data content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-
-        public async Task<Response<T>> MultipartFormPostAsync<T>(string service, Dictionary<string, string> fields)
-        {
-            List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
-            foreach (var pair in fields) lst.Add(new KeyValuePair<string, string>(pair.Key, pair.Value));
-            return await MultipartFormPostAsync<T>(service, lst);
-        }
-        /// <summary>
-        /// Sends a Post request with Multipart Form Data content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-        public async Task<Response<T>> MultipartFormPostAsync<T>(string service, NameValueCollection fields)
-        {
-            List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
-            foreach (var k in fields.AllKeys) lst.Add(new KeyValuePair<string, string>(k, fields[k]));
-            return await MultipartFormPostAsync<T>(service, lst);
-        }
-        /// <summary>
-        /// Sends a Post request with Multipart Form Data content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-        public async Task<Response<T>> MultipartFormPostAsync<T>(string service, IEnumerable<KeyValuePair<string, string>> fields)
-        {
-            var uri = new Uri(BaseUri, service);
-            var formContent = new MultipartFormDataContent();
-            foreach (var item in fields)
-            {
-                formContent.Add(new StringContent(item.Value), item.Key);
-            }
-
-            return await postAsync<T>(uri, formContent);
-        }
-
-        /// <summary>
-        /// Sends a Post request with Form Url Encoded content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, Dictionary<string, string> fields)
-        {
-            List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
-            foreach (var pair in fields) lst.Add(new KeyValuePair<string, string>(pair.Key, pair.Value));
-            return await FormUrlEncodedPostAsync<T>(service, lst);
-        }
-        /// <summary>
-        /// Sends a Post request with Form Url Encoded content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, NameValueCollection fields)
-        {
-            List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
-            foreach (var k in fields.AllKeys) lst.Add(new KeyValuePair<string, string>(k, fields[k]));
-            return await FormUrlEncodedPostAsync<T>(service, lst);
-        }
-        /// <summary>
-        /// Sends a Post request with Form Url Encoded content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="fields">Form values</param>
-        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, IEnumerable<KeyValuePair<string, string>> fields)
-        {
-            var uri = new Uri(BaseUri, service);
-            var content = new FormUrlEncodedContent(fields);
-
-            return await postAsync<T>(uri, content);
-        }
-        /// <summary>
-        /// Sends a Post request with Form Url Encoded content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="values">Object with fields to be mapped</param>
-        public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, object values)
-            => await FormUrlEncodedPostAsync<T>(service, Helper.buildParams(values));
 
         /// <summary>
         /// Sends a Post request with specified content and process the returned content
@@ -251,12 +160,17 @@ namespace Simple.API
         private async Task<Response<T>> postAsync<T>(Uri uri, HttpContent content)
         {
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            if(content is not null) msg.Content = content;
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+            if (content is not null) msg.Content = content;
 
-            return await processResponseAsync<T>(uri, response);
+            return await sendMessageAsync<T>(uri, msg);
         }
+        private async Task<Response> postAsync(Uri uri, HttpContent content)
+        {
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            if (content is not null) msg.Content = content;
 
+            return await sendMessageAsync(msg);
+        }
 
         /* PUT */
         /// <summary>
@@ -269,8 +183,8 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
             msg.Content = buildJsonContent(value);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-            return Response.Build(response);
+
+            return await sendMessageAsync(msg);
         }
 
         /* PATCH */
@@ -285,9 +199,8 @@ namespace Simple.API
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
             msg.Content = buildJsonContent(value);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
 
-            return Response.Build(response);
+            return await sendMessageAsync(msg);
         }
 
         /* OPTIONS */
@@ -328,8 +241,18 @@ namespace Simple.API
                 message.Headers.Add(pair.Key, pair.Value);
             }
 
-            var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+            return await sendMessageAsync(message);
+        }
+
+        private async Task<Response> sendMessageAsync(HttpRequestMessage message)
+        {
+            using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
+        }
+        private async Task<Response<T>> sendMessageAsync<T>(Uri uri, HttpRequestMessage message)
+        {
+            using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+            return await processResponseAsync<T>(uri, response);
         }
 
         private HttpContent buildJsonContent(object value)
