@@ -89,7 +89,8 @@ namespace Simple.API
         public async Task<Response<T>> GetAsync<T>(string service)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.GetAsync(uri);
+            using var msg = new HttpRequestMessage(HttpMethod.Get, uri);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
             return await processResponseAsync<T>(uri, response);
         }
 
@@ -101,7 +102,8 @@ namespace Simple.API
         public async Task<Response> DeleteAsync(string service)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.DeleteAsync(uri);
+            using var msg = new HttpRequestMessage(HttpMethod.Delete, uri);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
         }
 
@@ -253,7 +255,9 @@ namespace Simple.API
         public async Task<Response> PutAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PutAsync(uri, buildContent(value));
+            using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
+            msg.Content = buildContent(value);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
         }
 
@@ -266,7 +270,11 @@ namespace Simple.API
         public async Task<Response> PatchAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            using var response = await httpClient.PatchAsync(uri, buildContent(value));
+
+            using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
+            msg.Content = buildContent(value);
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
             return Response.Build(response);
         }
 
@@ -302,12 +310,13 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             var message = new HttpRequestMessage(HttpMethod.Options, uri);
+
             foreach (var pair in headers)
             {
                 message.Headers.Add(pair.Key, pair.Value);
             }
 
-            var response = await httpClient.SendAsync(message);
+            var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
         }
 
