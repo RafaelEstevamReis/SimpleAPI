@@ -133,11 +133,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
 
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            // no content
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-
-            return Response.Build(response);
+            return await postAsync<object>(uri, null);
         }
         /// <summary>
         /// Sends a Post request
@@ -147,30 +143,11 @@ namespace Simple.API
         public async Task<Response> PostAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
+            var content = buildJsonContent(value);
 
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = buildJsonContent(value);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-
-            return Response.Build(response);
+            return await postAsync<object>(uri, content);
         }
 
-        /// <summary>
-        /// Sends a Post request with specified content and process the returned content
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
-        /// <param name="content">Content to be sent</param>
-        public async Task<Response<T>> PostAsync<T>(string service, HttpContent content)
-        {
-            var uri = new Uri(BaseUri, service);
-
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = content;
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-            
-            return await processResponseAsync<T>(uri, response);
-        }
         /// <summary>
         /// Sends a Post request with Multipart Form Data content and process the returned content
         /// </summary>
@@ -211,11 +188,7 @@ namespace Simple.API
                 formContent.Add(new StringContent(item.Value), item.Key);
             }
 
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = formContent;
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-
-            return await processResponseAsync<T>(uri, response);
+            return await postAsync<T>(uri, formContent);
         }
 
         /// <summary>
@@ -251,12 +224,9 @@ namespace Simple.API
         public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, IEnumerable<KeyValuePair<string, string>> fields)
         {
             var uri = new Uri(BaseUri, service);
+            var content = new FormUrlEncodedContent(fields);
 
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = new FormUrlEncodedContent(fields);
-            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
-
-            return await processResponseAsync<T>(uri, response);
+            return await postAsync<T>(uri, content);
         }
         /// <summary>
         /// Sends a Post request with Form Url Encoded content and process the returned content
@@ -266,6 +236,27 @@ namespace Simple.API
         /// <param name="values">Object with fields to be mapped</param>
         public async Task<Response<T>> FormUrlEncodedPostAsync<T>(string service, object values)
             => await FormUrlEncodedPostAsync<T>(service, Helper.buildParams(values));
+
+        /// <summary>
+        /// Sends a Post request with specified content and process the returned content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="content">Content to be sent</param>
+        public async Task<Response<T>> PostAsync<T>(string service, HttpContent content)
+        {
+            var uri = new Uri(BaseUri, service);
+            return await postAsync<T>(uri, content);
+        }
+        private async Task<Response<T>> postAsync<T>(Uri uri, HttpContent content)
+        {
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            if(content is not null) msg.Content = content;
+            using var response = await httpClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+
+            return await processResponseAsync<T>(uri, response);
+        }
+
 
         /* PUT */
         /// <summary>
@@ -358,7 +349,7 @@ namespace Simple.API
                 data = (T)(object)await response.Content.ReadAsByteArrayAsync();
                 binary = true;
             }
-            else if(typeof(T) == typeof(System.IO.Stream))
+            else if (typeof(T) == typeof(System.IO.Stream))
             {
                 data = (T)(object)await response.Content.ReadAsStreamAsync();
                 binary = true;
