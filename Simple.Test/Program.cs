@@ -20,8 +20,8 @@ namespace Simple.Test
                 DoubleFloatPoint = 3.14
             };
 
-            Client client = new Client("https://httpbin.org/");
-
+            var client = new ClientInfo("https://httpbin.org/");
+            
             /* GET */
             // no params
             var get = await client.GetAsync<TestResponse>("anything");
@@ -72,8 +72,7 @@ namespace Simple.Test
             // guid param
             await client.PatchAsync("anything", data, guid);
 
-
-            guid = guid;
+            Console.WriteLine("End");
         }
     }
 }
