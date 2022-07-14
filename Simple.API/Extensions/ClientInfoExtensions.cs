@@ -134,7 +134,6 @@ namespace Simple.API
             return await client.PostAsync($"{service}/{id}", value);
         }
 
-
         /// <summary>
         /// Sends a Post request with Multipart Form Data content and process the returned content
         /// </summary>
@@ -219,7 +218,6 @@ namespace Simple.API
         /// <param name="values">Object with fields to be mapped</param>
         public static async Task<Response<T>> FormUrlEncodedPostAsync<T>(this ClientInfo client, string service, object values)
             => await FormUrlEncodedPostAsync<T>(client, service, Helper.buildParams(values));
-
 
         /* PUT */
 
