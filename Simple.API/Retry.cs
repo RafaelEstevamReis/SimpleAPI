@@ -9,7 +9,7 @@ namespace Simple.API
     /// <summary>
     /// Class to retry ClientInfo Calls
     /// </summary>
-    public class Retry
+    internal class Retry
     {
         Dictionary<HttpStatusCode, Func<bool>> dicHandlers;
         /// <summary>
