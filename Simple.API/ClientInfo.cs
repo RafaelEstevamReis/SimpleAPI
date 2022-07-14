@@ -17,6 +17,10 @@ namespace Simple.API
         /// Response content event
         /// </summary>
         public event EventHandler<ResponseReceived> ResponseDataReceived;
+        /// <summary>
+        /// HttpRequestMessage ready to be sent
+        /// </summary>
+        public event EventHandler<HttpRequestMessage> BeforeSend;
 
         private readonly HttpClient httpClient;
         /// <summary>
@@ -157,6 +161,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
             return await postAsync<T>(uri, content);
         }
+
         private async Task<Response<T>> postAsync<T>(Uri uri, HttpContent content)
         {
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -246,11 +251,13 @@ namespace Simple.API
 
         private async Task<Response> sendMessageAsync(HttpRequestMessage message)
         {
+            BeforeSend?.Invoke(this, message);
             using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
             return Response.Build(response);
         }
         private async Task<Response<T>> sendMessageAsync<T>(Uri uri, HttpRequestMessage message)
         {
+            BeforeSend?.Invoke(this, message);
             using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
             return await processResponseAsync<T>(uri, response);
         }
