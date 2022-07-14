@@ -121,6 +121,11 @@
             Response content event
             </summary>
         </member>
+        <member name="E:Simple.API.ClientInfo.BeforeSend">
+            <summary>
+            HttpRequestMessage ready to be sent
+            </summary>
+        </member>
         <member name="F:Simple.API.ClientInfo.BaseUri">
             <summary>
             Base url of the API
@@ -199,62 +204,6 @@
             <typeparam name="T">Return type</typeparam>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="content">Content to be sent</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.MultipartFormPostAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            Sends a Post request with Multipart Form Data content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.MultipartFormPostAsync``1(System.String,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Sends a Post request with Multipart Form Data content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.MultipartFormPostAsync``1(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
-            <summary>
-            Sends a Post request with Multipart Form Data content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.FormUrlEncodedPostAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            Sends a Post request with Form Url Encoded content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.FormUrlEncodedPostAsync``1(System.String,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Sends a Post request with Form Url Encoded content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.FormUrlEncodedPostAsync``1(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
-            <summary>
-            Sends a Post request with Form Url Encoded content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="fields">Form values</param>
-        </member>
-        <member name="M:Simple.API.ClientInfo.FormUrlEncodedPostAsync``1(System.String,System.Object)">
-            <summary>
-            Sends a Post request with Form Url Encoded content and process the returned content
-            </summary>
-            <typeparam name="T">Return type</typeparam>
-            <param name="service">Service to request from, will be concatenated with BaseUri</param>
-            <param name="values">Object with fields to be mapped</param>
         </member>
         <member name="M:Simple.API.ClientInfo.PutAsync(System.String,System.Object)">
             <summary>
@@ -566,6 +515,62 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
             <param name="id">Service/action id</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.MultipartFormPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Sends a Post request with Multipart Form Data content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.MultipartFormPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sends a Post request with Multipart Form Data content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.MultipartFormPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Sends a Post request with Multipart Form Data content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.FormUrlEncodedPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Sends a Post request with Form Url Encoded content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.FormUrlEncodedPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sends a Post request with Form Url Encoded content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.FormUrlEncodedPostAsync``1(Simple.API.ClientInfo,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Sends a Post request with Form Url Encoded content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fields">Form values</param>
+        </member>
+        <member name="M:Simple.API.ClientInfoExtensions.FormUrlEncodedPostAsync``1(Simple.API.ClientInfo,System.String,System.Object)">
+            <summary>
+            Sends a Post request with Form Url Encoded content and process the returned content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="values">Object with fields to be mapped</param>
         </member>
         <member name="M:Simple.API.ClientInfoExtensions.PutAsync(Simple.API.ClientInfo,System.String,System.Object,System.Int32)">
             <summary>
