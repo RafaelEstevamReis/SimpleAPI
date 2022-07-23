@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Simple.API
 {
+    [Obsolete("Use ClientInfo instead")]
     /// <summary>
     /// Simple json-based api client with more information
     /// </summary>
