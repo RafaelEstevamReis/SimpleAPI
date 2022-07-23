@@ -780,12 +780,17 @@
             Gets string response on Non-SuccessStatusCode
             </summary>
         </member>
+        <member name="P:Simple.API.Response.Duration">
+            <summary>
+            Request duration
+            </summary>
+        </member>
         <member name="M:Simple.API.Response.ParseErrorResponseData``1">
             <summary>
             Parses json ErrorResponseData as `T`
             </summary>
         </member>
-        <member name="M:Simple.API.Response.Build(System.Net.Http.HttpResponseMessage)">
+        <member name="M:Simple.API.Response.Build(System.Net.Http.HttpResponseMessage,System.DateTime)">
             <summary>
             Create a new isntance
             </summary>
@@ -801,7 +806,7 @@
             Deserialized data
             </summary>
         </member>
-        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,System.Net.Http.Headers.HttpContentHeaders,`0,System.String)">
+        <member name="M:Simple.API.Response`1.Build(System.Net.Http.HttpResponseMessage,System.Net.Http.Headers.HttpContentHeaders,`0,System.String,System.DateTime)">
             <summary>
             Create a new isntance
             </summary>
