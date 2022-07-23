@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -38,6 +39,10 @@ namespace Simple.API
         /// Gets string response on Non-SuccessStatusCode
         /// </summary>
         public string ErrorResponseData { get; protected set; }
+        /// <summary>
+        /// Request duration
+        /// </summary>
+        public TimeSpan Duration { get; protected set; }
 
         /// <summary>
         /// Parses json ErrorResponseData as `T`
@@ -50,7 +55,7 @@ namespace Simple.API
         /// <summary>
         /// Create a new isntance
         /// </summary>
-        public static Response Build(HttpResponseMessage response)
+        public static Response Build(HttpResponseMessage response, DateTime start)
         {
             string errorData = null;
             if (!response.IsSuccessStatusCode) errorData = response.Content.ReadAsStringAsync().Result;
@@ -64,6 +69,7 @@ namespace Simple.API
                 ReasonPhrase = response.ReasonPhrase,
                 StatusCode = response.StatusCode,
                 ErrorResponseData = errorData,
+                Duration = DateTime.Now - start,
             };
         }
     }
@@ -81,7 +87,7 @@ namespace Simple.API
         /// <summary>
         /// Create a new isntance
         /// </summary>
-        public static Response<T> Build(HttpResponseMessage response, HttpContentHeaders headers, T data, string errorData)
+        public static Response<T> Build(HttpResponseMessage response, HttpContentHeaders headers, T data, string errorData, DateTime start)
         {
             return new Response<T>()
             {
@@ -93,6 +99,7 @@ namespace Simple.API
                 ReasonPhrase = response.ReasonPhrase,
                 StatusCode = response.StatusCode,
                 ErrorResponseData = errorData,
+                Duration = DateTime.Now - start,
             };
         }
     }

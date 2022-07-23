@@ -252,14 +252,16 @@ namespace Simple.API
         private async Task<Response> sendMessageAsync(HttpRequestMessage message)
         {
             BeforeSend?.Invoke(this, message);
+            DateTime start = DateTime.Now; // not include BeforeSend execution
             using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-            return Response.Build(response);
+            return Response.Build(response, start);
         }
         private async Task<Response<T>> sendMessageAsync<T>(Uri uri, HttpRequestMessage message)
         {
             BeforeSend?.Invoke(this, message);
+            DateTime start = DateTime.Now; // not include BeforeSend execution
             using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-            return await processResponseAsync<T>(uri, response);
+            return await processResponseAsync<T>(uri, response, start);
         }
 
         private HttpContent buildJsonContent(object value)
@@ -267,7 +269,7 @@ namespace Simple.API
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value);
             return new StringContent(jsonValue, Encoding.UTF8, "application/json");
         }
-        private async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response)
+        private async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response, DateTime start)
         {
             T data = default;
 
@@ -328,7 +330,7 @@ namespace Simple.API
 
             }
 
-            var d = Response<T>.Build(response, contentHeaders, data, errorData);
+            var d = Response<T>.Build(response, contentHeaders, data, errorData, start);
 
             return d;
         }
