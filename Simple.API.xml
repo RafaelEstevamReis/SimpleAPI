@@ -24,11 +24,6 @@
             Response returned
             </summary>
         </member>
-        <member name="T:Simple.API.Client">
-            <summary>
-            Simple json-based api client with more information
-            </summary>
-        </member>
         <member name="F:Simple.API.Client.BaseUri">
             <summary>
             Base url of the API
