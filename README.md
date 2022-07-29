@@ -40,10 +40,27 @@ How to GET a resource at `https://httpbin.org/anything/42`
 ~~~C#
 // Base address is used to reuse the client object 
 // but also do not have to repeat all the address
-API.Client client = new API.Client("https://httpbin.org/");
+var client = new ClientInfo("https://httpbin.org/");
 
-var getInt = await client.GetAsync<TestResponse>("anything", 42);
-var getParam = await client.GetAsync<TestResponse>("anything", new { id = 42 });
+/* GET */
+// no params
+var get = await client.GetAsync<TestResponse>("anything");
+// object builded param
+var t = await client.GetAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
+/* POST */
+var post = await client.PostAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
+/* And all others */
+var putResponse = await client.PutAsync("anything", data);
+var patchResponse = await client.PatchAsync("anything", data);
+var deleteResponse = await client.DeleteAsync("anything");
 ~~~
 
+The response object contains the original data, status code, request and response headers
+
+~~~C#
+if(!putResponse.IsSuccessStatusCode) 
+  Console.WriteLine("☹️");
+if(patchResponse.StatusCode == HttpStatusCode.Forbidden) 
+  Console.WriteLine("🔒");
+~~~
 
