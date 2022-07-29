@@ -51,9 +51,19 @@ namespace Simple.API
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(ErrorResponseData);
         }
+        /// <summary>
+        /// Throws an HttpRequestException if not IsSuccessStatusCode
+        /// </summary>
+        /// <exception cref="HttpRequestException">HttpRequestException if not IsSuccessStatusCode</exception>
+        public void EnsureSuccessStatusCode()
+        {
+            if (IsSuccessStatusCode) return;
+
+            throw new HttpRequestException($"[{RequestMessage.Method}] {RequestMessage.RequestUri} [{(int)StatusCode}] failed with {ReasonPhrase}");
+        }
 
         /// <summary>
-        /// Create a new isntance
+        /// Create a new instance
         /// </summary>
         public static Response Build(HttpResponseMessage response, DateTime start)
         {
