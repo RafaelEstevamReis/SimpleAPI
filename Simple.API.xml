@@ -785,9 +785,15 @@
             Parses json ErrorResponseData as `T`
             </summary>
         </member>
+        <member name="M:Simple.API.Response.EnsureSuccessStatusCode">
+            <summary>
+            Throws an HttpRequestException if not IsSuccessStatusCode
+            </summary>
+            <exception cref="T:System.Net.Http.HttpRequestException">HttpRequestException if not IsSuccessStatusCode</exception>
+        </member>
         <member name="M:Simple.API.Response.Build(System.Net.Http.HttpResponseMessage,System.DateTime)">
             <summary>
-            Create a new isntance
+            Create a new instance
             </summary>
         </member>
         <member name="T:Simple.API.Response`1">
