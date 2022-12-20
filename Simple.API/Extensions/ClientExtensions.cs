@@ -7,6 +7,7 @@ namespace Simple.API
     /// <summary>
     /// Entensions for the client
     /// </summary>
+    [Obsolete]
     public static class ClientExtensions
     {
         /// <summary>
