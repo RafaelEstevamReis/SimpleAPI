@@ -2,8 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netcoreapp3.1;net6.0;netstandard1.1</TargetFrameworks>
-		<LangVersion>9.0</LangVersion>
-		<Version>1.5.4</Version>
+		<LangVersion>10.0</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Version>1.5.5</Version>
 		<Authors>RafaelEstevam.Net</Authors>
 		<Company>RafaelEstevam.Net</Company>
 		<Product>Simple C# API client</Product>
@@ -14,7 +16,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Simple API client</PackageTags>
 		<PackageReleaseNotes>See examples and documentation on the GitHub page
-Paired with commit 2ddadcd
+Paired with commit 2167e9b
 https://github.com/RafaelEstevamReis/SimpleAPI
 		</PackageReleaseNotes>
 	</PropertyGroup>
