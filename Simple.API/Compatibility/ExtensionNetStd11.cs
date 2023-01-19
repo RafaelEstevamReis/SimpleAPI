@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD1_1
+﻿#if NETSTANDARD
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;

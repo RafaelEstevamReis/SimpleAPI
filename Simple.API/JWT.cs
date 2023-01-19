@@ -156,7 +156,7 @@ namespace Simple.API
         /// </summary>
         public string aud { get; set; }
 
-#if !NETSTANDARD1_1
+#if !NETSTANDARD
         /// <summary>
         /// Expiration Time
         /// </summary>
