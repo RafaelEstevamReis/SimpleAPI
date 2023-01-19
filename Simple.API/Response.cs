@@ -59,7 +59,7 @@ namespace Simple.API
         {
             if (IsSuccessStatusCode) return;
 
-            throw new HttpRequestException($"[{RequestMessage.Method}] {RequestMessage.RequestUri} [{(int)StatusCode}] failed with {ReasonPhrase}");
+            throw new UnsuccessfulStatusCodeException(this);
         }
 
         /// <summary>
