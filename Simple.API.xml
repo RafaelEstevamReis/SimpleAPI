@@ -205,9 +205,23 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="content">Content to be sent</param>
         </member>
+        <member name="M:Simple.API.ClientInfo.PutAsync``1(System.String,System.Object)">
+            <summary>
+            Sends a Put request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="value">Value to be sent</param>
+        </member>
         <member name="M:Simple.API.ClientInfo.PutAsync(System.String,System.Object)">
             <summary>
             Sends a Put request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="value">Value to be sent</param>
+        </member>
+        <member name="M:Simple.API.ClientInfo.PatchAsync``1(System.String,System.Object)">
+            <summary>
+            Sends a Patch request
             </summary>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="value">Value to be sent</param>
