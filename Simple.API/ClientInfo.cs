@@ -183,6 +183,19 @@ namespace Simple.API
         /// </summary>
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Value to be sent</param>
+        public async Task<Response<T>> PutAsync<T>(string service, object value)
+        {
+            var uri = new Uri(BaseUri, service);
+            using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
+            msg.Content = buildJsonContent(value);
+
+            return await sendMessageAsync<T>(uri, msg);
+        }
+        /// <summary>
+        /// Sends a Put request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="value">Value to be sent</param>
         public async Task<Response> PutAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
