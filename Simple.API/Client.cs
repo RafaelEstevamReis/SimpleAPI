@@ -9,7 +9,7 @@ namespace Simple.API
     /// <summary>
     /// Simple json-based api client with more information
     /// </summary>
-    [Obsolete("Use ClientInfo instead")]
+    [Obsolete("Use ClientInfo instead", true)]
     public class Client
     {
         private readonly HttpClient httpClient;
