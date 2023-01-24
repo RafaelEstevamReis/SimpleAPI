@@ -109,6 +109,17 @@ namespace Simple.API
 
             return await sendMessageAsync(msg);
         }
+        /// <summary>
+        /// Sends a Delete request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        public async Task<Response<T>> DeleteAsync<T>(string service)
+        {
+            var uri = new Uri(BaseUri, service);
+            using var msg = new HttpRequestMessage(HttpMethod.Delete, uri);
+
+            return await sendMessageAsync<T>(uri, msg);
+        }
 
         /* POST */
         /// <summary>
