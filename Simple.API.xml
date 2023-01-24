@@ -176,6 +176,12 @@
             </summary>
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
         </member>
+        <member name="M:Simple.API.ClientInfo.DeleteAsync``1(System.String)">
+            <summary>
+            Sends a Delete request
+            </summary>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        </member>
         <member name="M:Simple.API.ClientInfo.PostAsync``1(System.String,System.Object)">
             <summary>
             Sends a Post request and process the returned content
