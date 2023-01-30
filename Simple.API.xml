@@ -810,11 +810,22 @@
             Parses json ErrorResponseData as `T`
             </summary>
         </member>
+        <member name="M:Simple.API.Response.TryParseErrorResponseData``1(``0@)">
+            <summary>
+            Tries to parse json ErrorResponseData as `TError`
+            </summary>
+        </member>
         <member name="M:Simple.API.Response.EnsureSuccessStatusCode">
             <summary>
-            Throws an HttpRequestException if not IsSuccessStatusCode
+            Throws an UnsuccessfulStatusCodeException if not IsSuccessStatusCode
             </summary>
-            <exception cref="T:System.Net.Http.HttpRequestException">HttpRequestException if not IsSuccessStatusCode</exception>
+            <exception cref="T:Simple.API.UnsuccessfulStatusCodeException">UnsuccessfulStatusCodeException if not IsSuccessStatusCode</exception>
+        </member>
+        <member name="M:Simple.API.Response.EnsureSuccessStatusCode``1">
+            <summary>
+            Throws an UnsuccessfulStatusCodeException&lt;TError&gt; if not IsSuccessStatusCode
+            </summary>
+            <exception cref="T:Simple.API.UnsuccessfulStatusCodeException">UnsuccessfulStatusCodeException if not IsSuccessStatusCode</exception>
         </member>
         <member name="M:Simple.API.Response.Build(System.Net.Http.HttpResponseMessage,System.DateTime)">
             <summary>
