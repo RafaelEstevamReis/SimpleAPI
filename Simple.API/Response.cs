@@ -52,14 +52,42 @@ namespace Simple.API
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(ErrorResponseData);
         }
         /// <summary>
-        /// Throws an HttpRequestException if not IsSuccessStatusCode
+        /// Tries to parse json ErrorResponseData as `TError`
         /// </summary>
-        /// <exception cref="HttpRequestException">HttpRequestException if not IsSuccessStatusCode</exception>
+        public bool TryParseErrorResponseData<TError>(out TError err)
+        {
+            try
+            {
+                err = ParseErrorResponseData<TError>();
+                return true;
+            }
+            catch
+            {
+                err = default;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Throws an UnsuccessfulStatusCodeException if not IsSuccessStatusCode
+        /// </summary>
+        /// <exception cref="UnsuccessfulStatusCodeException">UnsuccessfulStatusCodeException if not IsSuccessStatusCode</exception>
         public void EnsureSuccessStatusCode()
         {
             if (IsSuccessStatusCode) return;
 
             throw new UnsuccessfulStatusCodeException(this);
+        }
+        /// <summary>
+        /// Throws an UnsuccessfulStatusCodeException&lt;TError&gt; if not IsSuccessStatusCode
+        /// </summary>
+        /// <exception cref="UnsuccessfulStatusCodeException">UnsuccessfulStatusCodeException if not IsSuccessStatusCode</exception>
+        public void EnsureSuccessStatusCode<TError>()
+            where TError : class
+        {
+            if (IsSuccessStatusCode) return;
+
+            TryParseErrorResponseData(out TError err);
+            throw new UnsuccessfulStatusCodeException<TError>(this, err);
         }
 
         /// <summary>
