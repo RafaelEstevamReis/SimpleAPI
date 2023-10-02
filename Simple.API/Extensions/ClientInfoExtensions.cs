@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Simple.API
@@ -218,6 +220,36 @@ namespace Simple.API
         /// <param name="values">Object with fields to be mapped</param>
         public static async Task<Response<T>> FormUrlEncodedPostAsync<T>(this ClientInfo client, string service, object values)
             => await FormUrlEncodedPostAsync<T>(client, service, Helper.buildParams(values));
+
+        /// <summary>
+        /// Sends a Post request with Formfile content
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="fileToSend">Stream to sent</param>
+        /// <param name="mediaMimeType">Media mime type</param>
+        /// <param name="formFieldName">Name of the field in the upload form</param>
+        /// <param name="onDiskFileName">The name of the file</param>
+        public static async Task<Response<T>> MultipartFormPostAsync<T>(this ClientInfo client, string service, Stream fileToSend, string mediaMimeType, string formFieldName, string onDiskFileName)
+        {
+            var fileContent = new StreamContent(fileToSend);
+            using var formData = new MultipartFormDataContent();
+            if (!string.IsNullOrEmpty(mediaMimeType))
+            {
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(mediaMimeType);
+            }
+            if (string.IsNullOrEmpty(onDiskFileName))
+            {
+                formData.Add(fileContent, formFieldName);
+            }
+            else
+            {
+                formData.Add(fileContent, formFieldName, onDiskFileName);
+            }
+
+            return await client.PostAsync<T>(service, formData);
+        }
+
 
         /* PUT */
 

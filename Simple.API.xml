@@ -359,6 +359,17 @@
             <param name="service">Service to request from, will be concatenated with BaseUri</param>
             <param name="values">Object with fields to be mapped</param>
         </member>
+        <member name="M:Simple.API.ClientInfoExtensions.MultipartFormPostAsync``1(Simple.API.ClientInfo,System.String,System.IO.Stream,System.String,System.String,System.String)">
+            <summary>
+            Sends a Post request with Formfile content
+            </summary>
+            <typeparam name="T">Return type</typeparam>
+            <param name="service">Service to request from, will be concatenated with BaseUri</param>
+            <param name="fileToSend">Stream to sent</param>
+            <param name="mediaMimeType">Media mime type</param>
+            <param name="formFieldName">Name of the field in the upload form</param>
+            <param name="onDiskFileName">The name of the file</param>
+        </member>
         <member name="M:Simple.API.ClientInfoExtensions.PutAsync(Simple.API.ClientInfo,System.String,System.Object,System.Int32)">
             <summary>
             Sends a Put request
