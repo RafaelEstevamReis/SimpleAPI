@@ -10,15 +10,17 @@ using System.Threading.Tasks;
 
 public class WebSocket<TSend, TReceive>
 {
-    public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
     private ClientWebSocket webSocket;
     private CancellationTokenSource cancelSource;
 
     public string Url { get; }
     public WebSocketProcessorBase<TSend, TReceive> Processor { get; }
+    public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
+    public TimeSpan DisconnectWaitTime { get; set; } = TimeSpan.FromMilliseconds(750);
 
     public event EventHandler<TReceive> OnMessageReceived;
     public event EventHandler<WebSocketCloseStatus> OnConnectionClosed;
+    public event EventHandler<Exception> OnError;
 
     public WebSocket(string url, WebSocketProcessorBase<TSend, TReceive> processor)
     {
@@ -38,6 +40,7 @@ public class WebSocket<TSend, TReceive>
 
         cancelSource?.Dispose();
         cancelSource = new CancellationTokenSource();
+
         await webSocket.ConnectAsync(new Uri(Url), cancelSource.Token);
         await Task.Factory.StartNew(receiveLoop, cancelSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
@@ -46,21 +49,23 @@ public class WebSocket<TSend, TReceive>
         if (webSocket is null) return;
         if (webSocket.State == WebSocketState.Open)
         {
-            cancelSource.CancelAfter(TimeSpan.FromMilliseconds(250));
+            cancelSource.CancelAfter(DisconnectWaitTime);
+
             await webSocket.CloseOutputAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
         }
         webSocket.Dispose();
         webSocket = null;
+
         cancelSource.Dispose();
         cancelSource = null;
     }
     private async Task receiveLoop()
     {
         var receiveToken = cancelSource.Token;
-        MemoryStream outputStream = null;
         WebSocketReceiveResult receiveResult = null;
         var buffer = new ArraySegment<byte>(new byte[ReceiveBufferSize]);
+        MemoryStream outputStream = null;
         try
         {
             while (!receiveToken.IsCancellationRequested)
@@ -85,6 +90,12 @@ public class WebSocket<TSend, TReceive>
             }
         }
         catch (TaskCanceledException) { /**/ }
+        catch(Exception ex)
+        {
+            if (OnError == null) throw;
+
+            OnError.Invoke(this, ex);
+        }
         finally
         {
             outputStream?.Dispose();
