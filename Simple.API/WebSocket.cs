@@ -8,19 +8,19 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class WebSocket<DataTypeSend, DataTypeReceive>
+internal class WebSocket<TSend, TReceive>
 {
     public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
     private ClientWebSocket webSocket;
     private CancellationTokenSource cancelSource;
 
     public string Url { get; }
-    public WebSocketProcessorBase<DataTypeSend, DataTypeReceive> Processor { get; }
+    public WebSocketProcessorBase<TSend, TReceive> Processor { get; }
 
-    public event EventHandler<DataTypeReceive> OnMessageReceived;
+    public event EventHandler<TReceive> OnMessageReceived;
     public event EventHandler<WebSocketCloseStatus> OnConnectionClosed;
 
-    public WebSocket(string url, WebSocketProcessorBase<DataTypeSend, DataTypeReceive> processor)
+    public WebSocket(string url, WebSocketProcessorBase<TSend, TReceive> processor)
     {
         Url = url;
         webSocket = new ClientWebSocket();
@@ -91,7 +91,7 @@ internal class WebSocket<DataTypeSend, DataTypeReceive>
         }
     }
 
-    public async Task SendMessageAsync<RequestType>(DataTypeSend data, CancellationToken cancellationToken)
+    public async Task SendMessageAsync<RequestType>(TSend data, CancellationToken cancellationToken)
     {
         var d = Processor.ProcessSendData(data);
         await webSocket.SendAsync(d.Item1, d.Item2, d.Item2 == WebSocketMessageType.Close, cancellationToken);
