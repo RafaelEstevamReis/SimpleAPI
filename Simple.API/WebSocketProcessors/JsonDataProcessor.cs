@@ -13,7 +13,8 @@ public class JsonDataProcessor<TSend, TReceive> : WebSocketProcessorBase<TSend, 
     public override TReceive ProcessReceivedData(Stream result)
     {
         using StreamReader reader = new StreamReader(result, Encoding);
-        return Newtonsoft.Json.JsonConvert.DeserializeObject<TReceive>(reader.ReadToEnd());
+        var json = reader.ReadToEnd();
+        return Newtonsoft.Json.JsonConvert.DeserializeObject<TReceive>(json);
     }
     public override (ArraySegment<byte>, WebSocketMessageType) ProcessSendData(TSend data)
     {
