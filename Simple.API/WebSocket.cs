@@ -93,13 +93,12 @@ public class WebSocket<TSend, TReceive>
         catch(Exception ex)
         {
             if (OnError == null) throw;
-
             OnError.Invoke(this, ex);
+            await DisconnectAsync();
         }
         finally
         {
             outputStream?.Dispose();
-            await DisconnectAsync();
         }
     }
 
