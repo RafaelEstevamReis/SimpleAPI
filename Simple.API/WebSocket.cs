@@ -8,7 +8,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class WebSocket<TSend, TReceive>
+public class WebSocket<TSend, TReceive>
 {
     public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
     private ClientWebSocket webSocket;
@@ -91,12 +91,16 @@ internal class WebSocket<TSend, TReceive>
         }
     }
 
-    public async Task SendMessageAsync<RequestType>(TSend data, CancellationToken cancellationToken)
+    public async Task SendMessageAsync(TSend data)
+    {
+        await SendMessageAsync(data, cancelSource.Token);
+    }
+    public async Task SendMessageAsync(TSend data, CancellationToken cancellationToken)
     {
         var d = Processor.ProcessSendData(data);
         await webSocket.SendAsync(d.Item1, d.Item2, d.Item2 == WebSocketMessageType.Close, cancellationToken);
     }
-    public async Task SendCloseMessageAsync<RequestType>( CancellationToken cancellationToken)
+    public async Task SendCloseMessageAsync( CancellationToken cancellationToken)
     {
         var d = Processor.ProcessClose();
         await webSocket.SendAsync(d,  WebSocketMessageType.Close, true, cancellationToken);
