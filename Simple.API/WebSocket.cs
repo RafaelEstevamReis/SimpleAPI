@@ -99,6 +99,7 @@ public class WebSocket<TSend, TReceive>
         finally
         {
             outputStream?.Dispose();
+            await DisconnectAsync();
         }
     }
 
