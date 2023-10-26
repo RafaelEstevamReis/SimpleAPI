@@ -16,7 +16,7 @@ public class WebSocket<TSend, TReceive>
     public string Url { get; }
     public WebSocketProcessorBase<TSend, TReceive> Processor { get; }
     public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
-    public TimeSpan DisconnectWaitTime { get; set; } = TimeSpan.FromMilliseconds(750);
+    public TimeSpan DisconnectWaitTime { get; set; } = TimeSpan.FromSeconds(5);
 
     public event EventHandler<TReceive> OnMessageReceived;
     public event EventHandler<WebSocketCloseStatus> OnConnectionClosed;
@@ -51,8 +51,12 @@ public class WebSocket<TSend, TReceive>
         {
             cancelSource.CancelAfter(DisconnectWaitTime);
 
-            await webSocket.CloseOutputAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+            try
+            {
+                await webSocket.CloseOutputAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+            }
+            catch (OperationCanceledException) { }
         }
         webSocket.Dispose();
         webSocket = null;
@@ -90,7 +94,8 @@ public class WebSocket<TSend, TReceive>
             }
         }
         catch (TaskCanceledException) { /**/ }
-        catch(Exception ex)
+        catch (OperationCanceledException) { /**/ }
+        catch (Exception ex)
         {
             if (OnError == null) throw;
             OnError.Invoke(this, ex);
@@ -111,10 +116,10 @@ public class WebSocket<TSend, TReceive>
         var d = Processor.ProcessSendData(data);
         await webSocket.SendAsync(d.Item1, d.Item2, d.Item2 == WebSocketMessageType.Close, cancellationToken);
     }
-    public async Task SendCloseMessageAsync( CancellationToken cancellationToken)
+    public async Task SendCloseMessageAsync(CancellationToken cancellationToken)
     {
         var d = Processor.ProcessClose();
-        await webSocket.SendAsync(d,  WebSocketMessageType.Close, true, cancellationToken);
+        await webSocket.SendAsync(d, WebSocketMessageType.Close, true, cancellationToken);
     }
     private void responseReceived(Stream inputStream)
     {
