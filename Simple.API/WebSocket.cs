@@ -16,7 +16,6 @@ public class WebSocket<TSend, TReceive>
     public string Url { get; }
     public WebSocketProcessorBase<TSend, TReceive> Processor { get; }
     public int ReceiveBufferSize { get; set; } = 4 * 1024; // 4KB
-    public TimeSpan DisconnectWaitTime { get; set; } = TimeSpan.FromSeconds(5);
 
     public event EventHandler<TReceive> OnMessageReceived;
     public event EventHandler<WebSocketCloseStatus> OnConnectionClosed;
@@ -44,17 +43,17 @@ public class WebSocket<TSend, TReceive>
         await webSocket.ConnectAsync(new Uri(Url), cancelSource.Token);
         await Task.Factory.StartNew(receiveLoop, cancelSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
-    public async Task DisconnectAsync()
+    public virtual async Task DisconnectAsync()
     {
         if (webSocket is null) return;
         if (webSocket.State == WebSocketState.Open)
         {
-            cancelSource.CancelAfter(DisconnectWaitTime);
-
+            //cancelSource.CancelAfter(DisconnectWaitTime);            
             try
             {
-                await webSocket.CloseOutputAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                //await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                cancelSource.Cancel();
             }
             catch (OperationCanceledException) { }
         }
