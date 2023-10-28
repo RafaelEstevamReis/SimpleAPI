@@ -48,11 +48,9 @@ public class WebSocket<TSend, TReceive>
         if (webSocket is null) return;
         if (webSocket.State == WebSocketState.Open)
         {
-            //cancelSource.CancelAfter(DisconnectWaitTime);            
             try
             {
                 await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-                //await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                 cancelSource.Cancel();
             }
             catch (OperationCanceledException) { }
