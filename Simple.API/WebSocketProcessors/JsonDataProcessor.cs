@@ -20,7 +20,7 @@ public class JsonDataProcessor<TSend, TReceive> : WebSocketProcessorBase<TSend, 
     public override (ArraySegment<byte>, WebSocketMessageType) ProcessSendData(TSend data)
     {
         string json;
-        if (typeof(TReceive) == typeof(string)) json = data.ToString();
+        if (typeof(TSend) == typeof(string)) json = data.ToString();
         else json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
 
         var bytes = Encoding.GetBytes(json);
