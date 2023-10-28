@@ -14,11 +14,15 @@ public class JsonDataProcessor<TSend, TReceive> : WebSocketProcessorBase<TSend, 
     {
         using StreamReader reader = new StreamReader(result, Encoding);
         var json = reader.ReadToEnd();
+        if (typeof(TReceive) == typeof(string)) return (TReceive)(object)json;
         return Newtonsoft.Json.JsonConvert.DeserializeObject<TReceive>(json);
     }
     public override (ArraySegment<byte>, WebSocketMessageType) ProcessSendData(TSend data)
     {
-        var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+        string json;
+        if (typeof(TReceive) == typeof(string)) json = data.ToString();
+        else json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+
         var bytes = Encoding.GetBytes(json);
         return (new ArraySegment<byte>(bytes), WebSocketMessageType.Text);
     }
