@@ -108,14 +108,15 @@ public class WebSocket<TSend, TReceive>
     }
 
     public async Task SendMessageAsync(TSend data)
-    {
-        await SendMessageAsync(data, cancelSource.Token);
-    }
+        => await SendMessageAsync(data, cancelSource.Token);
+
     public async Task SendMessageAsync(TSend data, CancellationToken cancellationToken)
     {
         var d = Processor.ProcessSendData(data);
-        await webSocket.SendAsync(d.Item1, d.Item2, d.Item2 == WebSocketMessageType.Close, cancellationToken);
+        await webSocket.SendAsync(d.Item1, d.Item2, true, cancellationToken);
     }
+    public async Task SendCloseMessageAsync()
+        => await SendCloseMessageAsync(cancelSource.Token);
     public async Task SendCloseMessageAsync(CancellationToken cancellationToken)
     {
         var d = Processor.ProcessClose();
