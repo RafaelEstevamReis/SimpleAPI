@@ -59,7 +59,7 @@ namespace Simple.API
         /// <param name="p">Builds url get parameters</param>
         public static async Task<Response<T>> GetAsync<T>(this ClientInfo client, string service, object p)
         {
-            string url = Helper.buildUrl(service, Helper.buildParams(p));
+            string url = Helper.buildUrl(service, Helper.buildParams(p, client.NullParameterHandlingPolicy_IgnoreNulls));
             return await client.GetAsync<T>(url);
         }
 
@@ -219,7 +219,7 @@ namespace Simple.API
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="values">Object with fields to be mapped</param>
         public static async Task<Response<T>> FormUrlEncodedPostAsync<T>(this ClientInfo client, string service, object values)
-            => await FormUrlEncodedPostAsync<T>(client, service, Helper.buildParams(values));
+            => await FormUrlEncodedPostAsync<T>(client, service, Helper.buildParams(values, client.NullParameterHandlingPolicy_IgnoreNulls));
 
         /// <summary>
         /// Sends a Post request with Formfile content

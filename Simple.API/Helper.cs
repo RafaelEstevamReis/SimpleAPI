@@ -24,15 +24,15 @@ namespace Simple.API
         /// <param name="service">Service name</param>
         /// <param name="p">Object to extract parameters from</param>
         /// <returns>Url with parameters url encoded</returns>
-        public static string BuildUrlEncodedUrl(string service, object p)
-            => buildUrl(service, buildParams(p));
+        public static string BuildUrlEncodedUrl(string service, object p, bool ignoreNulls)
+            => buildUrl(service, buildParams(p, ignoreNulls));
 
         internal static string buildUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
         {
             string pars = string.Join("&", values.Select(pair => $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}"));
             return $"{service}?{pars}";
         }
-        internal static IEnumerable< KeyValuePair<string, string>> buildParams(object p)
+        internal static IEnumerable< KeyValuePair<string, string>> buildParams(object p, bool ignoreNulls)
         {
             if (p == null) yield break; // Empty list
 
@@ -44,7 +44,7 @@ namespace Simple.API
             foreach (var prop in type.GetProperties())
             {
                 var value = prop.GetValue(p);
-                if (value == null) continue;
+                if (value == null && ignoreNulls) continue;
 
                 string sValue;
 

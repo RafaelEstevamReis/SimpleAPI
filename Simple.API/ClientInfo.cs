@@ -22,6 +22,11 @@ namespace Simple.API
         /// </summary>
         public event EventHandler<HttpRequestMessage> BeforeSend;
 
+        /// <summary>
+        /// Ignore Nulls when building parameteres
+        /// </summary>
+        public bool NullParameterHandlingPolicy_IgnoreNulls = true;
+
         private readonly HttpClient httpClient;
         /// <summary>
         /// Base url of the API
@@ -253,7 +258,7 @@ namespace Simple.API
         /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
         /// <param name="value">Object with fields to be mapped</param>
         public async Task<Response> OptionsAsync(string service, object value)
-            => await OptionsAsync(service, Helper.buildParams(value));
+            => await OptionsAsync(service, Helper.buildParams(value, NullParameterHandlingPolicy_IgnoreNulls));
 
 #if !NETSTANDARD1_1
         /// <summary>
