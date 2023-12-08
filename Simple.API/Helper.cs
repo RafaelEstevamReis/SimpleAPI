@@ -32,7 +32,7 @@ namespace Simple.API
             string pars = string.Join("&", values.Select(pair => $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}"));
             return $"{service}?{pars}";
         }
-        internal static IEnumerable< KeyValuePair<string, string>> buildParams(object p, bool ignoreNulls)
+        internal static IEnumerable<KeyValuePair<string, string>> buildParams(object p, bool ignoreNulls)
         {
             if (p == null) yield break; // Empty list
 
@@ -44,11 +44,16 @@ namespace Simple.API
             foreach (var prop in type.GetProperties())
             {
                 var value = prop.GetValue(p);
-                if (value == null && ignoreNulls) continue;
 
                 string sValue;
 
-                if (prop.PropertyType == typeof(decimal))
+                if (value == null)
+                {
+                    if (ignoreNulls) continue;
+
+                    sValue = string.Empty;
+                }
+                else if (prop.PropertyType == typeof(decimal))
                 {
                     sValue = ((decimal)value).ToString(CultureInfo.InvariantCulture);
                 }
