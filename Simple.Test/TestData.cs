@@ -8,7 +8,7 @@ namespace Simple.Test
         public Guid Uid { get; set; }
 
         public string Text { get; set; }
-        public int Number { get; set; }
+        public int? Number { get; set; }
         public double DoubleFloatPoint { get; set; }
     }
 }

@@ -44,6 +44,7 @@ namespace Simple.API
             foreach (var prop in type.GetProperties())
             {
                 var value = prop.GetValue(p);
+                if (value == null) continue;
 
                 string sValue;
 
