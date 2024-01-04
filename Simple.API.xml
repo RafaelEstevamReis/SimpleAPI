@@ -44,6 +44,11 @@
             Ignore Nulls when building parameteres
             </summary>
         </member>
+        <member name="P:Simple.API.ClientInfo.Timeout">
+            <summary>
+            Gets or sets the timespan to wait before the request times out.
+            </summary>
+        </member>
         <member name="F:Simple.API.ClientInfo.BaseUri">
             <summary>
             Base url of the API

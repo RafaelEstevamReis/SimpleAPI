@@ -26,6 +26,15 @@ namespace Simple.API
         /// Ignore Nulls when building parameteres
         /// </summary>
         public bool NullParameterHandlingPolicy_IgnoreNulls = true;
+        
+        /// <summary>
+        /// Gets or sets the timespan to wait before the request times out.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get => httpClient.Timeout;
+            set => httpClient.Timeout = value;
+        }
 
         private readonly HttpClient httpClient;
         /// <summary>
