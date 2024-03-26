@@ -68,6 +68,17 @@ namespace Simple.API
         /// </summary>
         public void SetAuthorization(string auth)
             => SetHeader("Authorization", auth);
+        
+        /// <summary>
+        /// Set Authorization header with as Basic authentication
+        /// </summary>
+        public void SetAuthorizationBasic(string user, string password)
+        {
+            var str = $"{user}:{password}";
+            var b64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(str));
+            SetAuthorization("Basic " + b64);
+        }
+
         /// <summary>
         /// Set Authorization header with a Bearer token
         /// </summary>
