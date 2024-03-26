@@ -75,7 +75,14 @@ namespace Simple.API
         public void SetAuthorizationBasic(string user, string password)
         {
             var str = $"{user}:{password}";
-            var b64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(str));
+
+#if NETSTANDARD1_1
+            var bytes = str.ToCharArray().Select(o => (byte)o).ToArray();
+#else
+            var bytes = Encoding.ASCII.GetBytes(str);
+#endif
+
+            var b64 = Convert.ToBase64String(bytes);
             SetAuthorization("Basic " + b64);
         }
 

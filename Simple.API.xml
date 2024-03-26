@@ -71,6 +71,11 @@
             Set Authorization header
             </summary>
         </member>
+        <member name="M:Simple.API.ClientInfo.SetAuthorizationBasic(System.String,System.String)">
+            <summary>
+            Set Authorization header with as Basic authentication
+            </summary>
+        </member>
         <member name="M:Simple.API.ClientInfo.SetAuthorizationBearer(System.String)">
             <summary>
             Set Authorization header with a Bearer token
