@@ -55,6 +55,31 @@ var patchResponse = await client.PatchAsync("anything", data);
 var deleteResponse = await client.DeleteAsync("anything");
 ~~~
 
+Authentication:
+~~~C#
+// Using with JWT Token:
+client.SetAuthorizationBearer(jwtToken);
+// Using with BasicAuth
+client.SetAuthorizationBasic(user, password);
+
+// Using with other options (manually set)
+client.SetAuthorization(headerKey, value);
+
+// For other headers (like x-auth)
+client.SetHeader("x-auth", xToken);
+~~~
+
+JWT parsing:
+~~~C#
+// Parse JWT
+var jwt = JWT.Parse(token);
+// Access commom fields
+bool valid = jwt.Content.GetExp > DateTime.Now;
+
+// Or parse your custom Model
+var customJwt = JWT<YourModel>.Parse(token);
+~~~
+
 The response object contains the original data, status code, request and response headers
 
 ~~~C#
