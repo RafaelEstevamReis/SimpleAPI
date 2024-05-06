@@ -16,6 +16,7 @@ A simple C# REST API client implementation
 ## Compatibility
 
 Huge compatibility, currently supports:
+* .Net 8
 * .Net 6
 * .Net Core 3.1
 * .Net Framework 4.5
