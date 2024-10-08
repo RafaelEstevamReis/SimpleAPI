@@ -419,7 +419,7 @@ namespace Simple.API
                     {
                         var obj = JObject.Parse(content);
                         // Entire Object
-                        if (DeserializeJValueOverride != null)
+                        if (DeserializeJObjectOverride != null)
                         {
                             DeserializeJObjectOverride.Invoke(this, obj);
                         }
