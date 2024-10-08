@@ -39,6 +39,16 @@
             HttpRequestMessage ready to be sent
             </summary>
         </member>
+        <member name="E:Simple.API.ClientInfo.DeserializeJValueOverride">
+            <summary>
+            Overrides deserialization process for each JValue
+            </summary>
+        </member>
+        <member name="E:Simple.API.ClientInfo.DeserializeJObjectOverride">
+            <summary>
+            Overrides deserialization process for the Object before .ToObject
+            </summary>
+        </member>
         <member name="F:Simple.API.ClientInfo.NullParameterHandlingPolicy_IgnoreNulls">
             <summary>
             Ignore Nulls when building parameteres

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -21,12 +22,20 @@ namespace Simple.API
         /// HttpRequestMessage ready to be sent
         /// </summary>
         public event EventHandler<HttpRequestMessage> BeforeSend;
+        /// <summary>
+        /// Overrides deserialization process for each JValue
+        /// </summary>
+        public event EventHandler<DeserializeJValueOverrideArgs> DeserializeJValueOverride;
+        /// <summary>
+        /// Overrides deserialization process for the Object before .ToObject
+        /// </summary>
+        public event EventHandler<JObject> DeserializeJObjectOverride;
 
         /// <summary>
         /// Ignore Nulls when building parameteres
         /// </summary>
         public bool NullParameterHandlingPolicy_IgnoreNulls = true;
-        
+
         /// <summary>
         /// Gets or sets the timespan to wait before the request times out.
         /// </summary>
@@ -68,7 +77,7 @@ namespace Simple.API
         /// </summary>
         public void SetAuthorization(string auth)
             => SetHeader("Authorization", auth);
-        
+
         /// <summary>
         /// Set Authorization header with as Basic authentication
         /// </summary>
@@ -385,6 +394,10 @@ namespace Simple.API
                 }
 
                 if (typeof(T) == typeof(string)) data = (T)(object)content;
+                else if (typeof(T) == typeof(JObject))
+                {
+                    data = (T)(object)JObject.Parse(content);
+                }
                 else if (typeof(T) == typeof(JWT))
                 {
                     if (content.Contains("\""))
@@ -396,8 +409,42 @@ namespace Simple.API
                         data = (T)(object)JWT.Parse(content);
                     }
                 }
-                else data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+                else
+                {
+                    if (DeserializeJValueOverride == null && DeserializeJObjectOverride == null)
+                    {
+                        data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+                    }
+                    else
+                    {
+                        var obj = JObject.Parse(content);
+                        // Entire Object
+                        if (DeserializeJValueOverride != null)
+                        {
+                            DeserializeJObjectOverride.Invoke(this, obj);
+                        }
+                        // Values
+                        if (DeserializeJValueOverride != null)
+                        {
+                            foreach (var value in obj.Descendants().OfType<JValue>())
+                            {
+                                var args = new DeserializeJValueOverrideArgs
+                                {
+                                    Handled = false,
+                                    Value = new JValue(value), //value.DeepClone(),
+                                };
+                                DeserializeJValueOverride.Invoke(this, args);
 
+                                if (args.Handled)
+                                {
+                                    value.Replace(args.Value);
+                                }
+                            }
+                        }
+
+                        data = obj.ToObject<T>();
+                    }
+                }
             }
 
             var d = Response<T>.Build(response, contentHeaders, data, errorData, start);
@@ -439,5 +486,12 @@ namespace Simple.API
                 return $"{Received:G} {Uri.PathAndQuery} [{StatusCode}] {Content}";
             }
         }
+
+        public class DeserializeJValueOverrideArgs
+        {
+            public bool Handled { get; set; }
+            public JValue Value { get; set; }
+        }
+
     }
 }
