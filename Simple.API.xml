@@ -64,7 +64,7 @@
             Base url of the API
             </summary>
         </member>
-        <member name="M:Simple.API.ClientInfo.#ctor(System.String,System.Net.Http.HttpClientHandler)">
+        <member name="M:Simple.API.ClientInfo.#ctor(System.String,System.Net.Http.HttpMessageHandler)">
             <summary>
             Creates a new insance
             </summary>
