@@ -55,13 +55,22 @@ namespace Simple.API
         /// </summary>
         /// <param name="baseUrl">Base url of the API</param>
         /// <param name="clientHandler">Optional HttpClientHandler to configure</param>
-        public ClientInfo(string baseUrl, HttpClientHandler clientHandler = null)
+        public ClientInfo(string baseUrl, HttpMessageHandler clientHandler = null)
         {
             if (!baseUrl.EndsWith("/")) baseUrl += '/';
             BaseUri = new Uri(baseUrl);
 
             if (clientHandler == null) clientHandler = new HttpClientHandler();
-            clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            if (clientHandler is HttpClientHandler hdl)
+            {
+                hdl.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            }
+#if !NETSTANDARD
+            if (clientHandler is SocketsHttpHandler shdl)
+            {
+                shdl.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            }
+#endif
 
             httpClient = new HttpClient(clientHandler);
 
