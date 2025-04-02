@@ -156,19 +156,28 @@ namespace Simple.API
         /// </summary>
         public string aud { get; set; }
 
-#if !NETSTANDARD
         /// <summary>
         /// Expiration Time
         /// </summary>
-        public DateTime GetExp => DateTime.UnixEpoch.AddSeconds(exp);
+        public DateTime GetExp => getTime(exp);
         /// <summary>
         /// Issued At
         /// </summary>
-        public DateTime GetIat => DateTime.UnixEpoch.AddSeconds(iat);
+        public DateTime GetIat => getTime(iat);
         /// <summary>
         /// Not Before
         /// </summary>
-        public DateTime GetNbf => DateTime.UnixEpoch.AddSeconds(nbf);
+        public DateTime GetNbf => getTime(nbf);
+
+        private static DateTime getTime(long v)
+        {
+#if NETSTANDARD1_1 || NETSTANDARD2_0
+            var linuxEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+#else
+            var linuxEpoch = DateTime.UnixEpoch;
 #endif
+            return linuxEpoch.AddSeconds(v);
+        }
+
     }
 }
