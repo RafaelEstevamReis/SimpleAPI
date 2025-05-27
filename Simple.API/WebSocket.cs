@@ -21,6 +21,8 @@ public class WebSocket<TSend, TReceive>
     public event EventHandler<WebSocketCloseStatus> OnConnectionClosed;
     public event EventHandler<Exception> OnError;
 
+    public ClientWebSocket InternalClient => webSocket;
+
     public WebSocket(string url, WebSocketProcessorBase<TSend, TReceive> processor)
     {
         Url = url;
