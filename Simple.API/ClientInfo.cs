@@ -19,6 +19,10 @@ namespace Simple.API
         /// </summary>
         public event EventHandler<ResponseReceived> ResponseDataReceived;
         /// <summary>
+        /// Overrides json serialization
+        /// </summary>
+        public event EventHandler<JsonSerializeArgs> JsonSerializeOverride;
+        /// <summary>
         /// HttpRequestMessage ready to be sent
         /// </summary>
         public event EventHandler<HttpRequestMessage> BeforeSend;
@@ -183,11 +187,10 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = buildJsonContent(value);
+            msg.Content = buildJsonContent(value, msg);
 
             return await sendMessageAsync<T>(uri, msg);
         }
-
         /// <summary>
         /// Sends a Post request
         /// </summary>
@@ -195,8 +198,9 @@ namespace Simple.API
         public async Task<Response> PostAsync(string service)
         {
             var uri = new Uri(BaseUri, service);
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
 
-            return await postAsync(uri, null);
+            return await sendMessageAsync(msg);
         }
         /// <summary>
         /// Sends a Post request
@@ -206,9 +210,9 @@ namespace Simple.API
         public async Task<Response> PostAsync(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-            var content = buildJsonContent(value);
-
-            return await postAsync(uri, content);
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            msg.Content = buildJsonContent(value, msg);
+            return await sendMessageAsync(msg);
         }
 
         /// <summary>
@@ -220,22 +224,10 @@ namespace Simple.API
         public async Task<Response<T>> PostAsync<T>(string service, HttpContent content)
         {
             var uri = new Uri(BaseUri, service);
-            return await postAsync<T>(uri, content);
-        }
-
-        private async Task<Response<T>> postAsync<T>(Uri uri, HttpContent content)
-        {
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
             if (content is not null) msg.Content = content;
 
             return await sendMessageAsync<T>(uri, msg);
-        }
-        private async Task<Response> postAsync(Uri uri, HttpContent content)
-        {
-            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (content is not null) msg.Content = content;
-
-            return await sendMessageAsync(msg);
         }
 
         /* PUT */
@@ -248,7 +240,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
-            msg.Content = buildJsonContent(value);
+            msg.Content = buildJsonContent(value, msg);
 
             return await sendMessageAsync<T>(uri, msg);
         }
@@ -261,7 +253,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
-            msg.Content = buildJsonContent(value);
+            msg.Content = buildJsonContent(value, msg);
 
             return await sendMessageAsync(msg);
         }
@@ -277,7 +269,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
-            msg.Content = buildJsonContent(value);
+            msg.Content = buildJsonContent(value, msg);
 
             return await sendMessageAsync<T>(uri, msg);
         }
@@ -291,7 +283,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
-            msg.Content = buildJsonContent(value);
+            msg.Content = buildJsonContent(value, msg);
 
             return await sendMessageAsync(msg);
         }
@@ -352,12 +344,29 @@ namespace Simple.API
             return await processResponseAsync<T>(uri, response, start);
         }
 
-        private HttpContent buildJsonContent(object value)
+        private HttpContent buildJsonContent(object value, HttpRequestMessage msg)
         {
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value, new Newtonsoft.Json.JsonSerializerSettings()
             {
                 NullValueHandling = NullParameterHandlingPolicy_IgnoreNulls ? Newtonsoft.Json.NullValueHandling.Ignore : Newtonsoft.Json.NullValueHandling.Include,
             });
+
+            if (JsonSerializeOverride != null)
+            {
+                var args = new JsonSerializeArgs
+                {
+                    Request = msg,
+                    Handled = false,
+                    Object = value,
+                    Value = jsonValue,
+                };
+                JsonSerializeOverride(this, args);
+                if (args.Handled)
+                {
+                    jsonValue = args.Value;
+                }
+            }
+
             return new StringContent(jsonValue, Encoding.UTF8, "application/json");
         }
         private async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response, DateTime start)
@@ -504,6 +513,12 @@ namespace Simple.API
             public bool Handled { get; set; }
             public JValue Value { get; set; }
         }
-
+        public class JsonSerializeArgs
+        {
+            public HttpRequestMessage Request { get; set; }
+            public object Object { get; set; }
+            public string? Value { get; set; }
+            public bool Handled { get; set; }
+        }
     }
 }

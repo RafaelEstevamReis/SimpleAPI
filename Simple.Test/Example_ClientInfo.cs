@@ -1,5 +1,6 @@
 ﻿using Simple.API;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Simple.Test
@@ -21,7 +22,15 @@ namespace Simple.Test
             };
 
             var client = new ClientInfo("https://httpbin.org/");
-            
+            // Request Signing example
+            // client.JsonSerializeOverride += (object sender, ClientInfo.JsonSerializeArgs e) =>
+            // {
+            //     // Sign
+            //     string signatureBase = $"{e.Request.Method}{e.Request.RequestUri}{e.Value}";
+            //     string signed = Convert.ToBase64String(Encoding.UTF8.GetBytes(signatureBase)); // Simulates request signing
+            //     e.Request.Headers.Add("X-SIGN", signed);
+            // };
+
             /* GET */
             // no params
             var get = await client.GetAsync<TestResponse>("anything");
@@ -76,5 +85,6 @@ namespace Simple.Test
 
             Console.WriteLine("End");
         }
+
     }
 }
