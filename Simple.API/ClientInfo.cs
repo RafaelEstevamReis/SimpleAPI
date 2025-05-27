@@ -354,7 +354,10 @@ namespace Simple.API
 
         private HttpContent buildJsonContent(object value)
         {
-            var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+            var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value, new Newtonsoft.Json.JsonSerializerSettings()
+            {
+                NullValueHandling = NullParameterHandlingPolicy_IgnoreNulls ? Newtonsoft.Json.NullValueHandling.Ignore : Newtonsoft.Json.NullValueHandling.Include,
+            });
             return new StringContent(jsonValue, Encoding.UTF8, "application/json");
         }
         private async Task<Response<T>> processResponseAsync<T>(Uri uri, HttpResponseMessage response, DateTime start)
