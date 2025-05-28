@@ -32,8 +32,9 @@ namespace Simple.API
         public event EventHandler<DeserializeJValueOverrideArgs> DeserializeJValueOverride;
         /// <summary>
         /// Overrides deserialization process for the Object before .ToObject
+        /// Occurs before DeserializeJValueOverride
         /// </summary>
-        public event EventHandler<JObject> DeserializeJObjectOverride;
+        public event EventHandler<DeserializeJObjectOverrideArgs> DeserializeJObjectOverride;
 
         /// <summary>
         /// Ignore Nulls when building parameteres
@@ -442,7 +443,14 @@ namespace Simple.API
                         // Entire Object
                         if (DeserializeJObjectOverride != null)
                         {
-                            DeserializeJObjectOverride.Invoke(this, obj);
+                            var args = new DeserializeJObjectOverrideArgs
+                            {
+                                Response = response,
+                                TargetType = typeof(T),
+                                JsonContent = content,
+                                Value = obj,
+                            };
+                            DeserializeJObjectOverride.Invoke(this, args);
                         }
                         // Values
                         if (DeserializeJValueOverride != null)
@@ -507,7 +515,6 @@ namespace Simple.API
                 return $"{Received:G} {Uri.PathAndQuery} [{StatusCode}] {Content}";
             }
         }
-
         public class DeserializeJValueOverrideArgs
         {
             public bool Handled { get; set; }
@@ -519,6 +526,13 @@ namespace Simple.API
             public object Object { get; set; }
             public string? Value { get; set; }
             public bool Handled { get; set; }
+        }
+        public class DeserializeJObjectOverrideArgs
+        {
+            public HttpResponseMessage Response { get; set; }
+            public Type TargetType { get; set; }
+            public string JsonContent { get; set; }
+            public JObject Value { get; set; }
         }
     }
 }
