@@ -42,6 +42,12 @@ namespace Simple.API
         public bool NullParameterHandlingPolicy_IgnoreNulls = true;
 
         /// <summary>
+        /// Defines the default timeout for new HttpClient instances created by the ClientInfo constructor.
+        /// This value is applied only during instance creation. Changing it afterward does not affect existing instances.
+        /// </summary>
+        public static TimeSpan? GlobalDefaultTimeout = null;
+
+        /// <summary>
         /// Gets or sets the timespan to wait before the request times out.
         /// </summary>
         public TimeSpan Timeout
@@ -78,6 +84,7 @@ namespace Simple.API
 #endif
 
             httpClient = new HttpClient(clientHandler);
+            if (GlobalDefaultTimeout != null) httpClient.Timeout = GlobalDefaultTimeout.Value;
 
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json");
         }
