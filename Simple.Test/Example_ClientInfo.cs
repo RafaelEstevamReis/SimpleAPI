@@ -29,7 +29,7 @@ class Example_ClientInfo
         //     string signed = Convert.ToBase64String(Encoding.UTF8.GetBytes(signatureBase)); // Simulates request signing
         //     e.Request.Headers.Add("X-SIGN", signed);
         // };
-
+        
         /* GET */
         // no params
         var get = await client.GetAsync<TestResponse>("anything");
@@ -81,6 +81,9 @@ class Example_ClientInfo
         await client.PatchAsync("anything", data, 42);
         // guid param
         await client.PatchAsync("anything", data, guid);
+
+        // Data on Sucess or TorwnThrow error in One operation
+        var responseData = await client.GetAsync<TestResponse>("anything").GetSuccessfulData();
 
         Console.WriteLine("End");
     }

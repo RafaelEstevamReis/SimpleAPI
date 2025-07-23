@@ -1,4 +1,4 @@
-﻿namespace Simple.API.Extensions;
+﻿namespace Simple.API;
 
 using System.Threading.Tasks;
 
