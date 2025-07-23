@@ -1,0 +1,16 @@
+﻿namespace Simple.API.Extensions;
+
+using System.Threading.Tasks;
+
+public static class ResponseExtensions
+{
+    public static T GetDataIfValid<T>(this Response<T> response)
+    {
+        response.EnsureSuccessStatusCode();
+        return response.Data;
+    }
+    public static async Task<T> GetDataIfValid<T>(this Task<Response<T>> responseTask)
+    {
+        return (await responseTask).GetDataIfValid();
+    }
+}
