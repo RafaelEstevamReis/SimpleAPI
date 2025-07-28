@@ -28,13 +28,19 @@ public class Example_ClientBuilder
             Number = 42
         });
 
+        // Accessing internal client
+        var client = demoClient.GetInternalClient();
+        // Setting authorization
+        demoClient.SetAuthorizationBearer("Your JWT here");
+        
         ;
         Console.WriteLine("End");
     }
 
+    [Timeout(timeoutInSeconds: 20)] // Optional Attribute for setting Client's Timeout
     public interface IDemo
     {
-        /* Normal Respnse return */
+        /* Normal Responses */
         [Get("anything")]
         Task<Response<TestResponse>> GetAnythingAsync();
 
@@ -47,9 +53,13 @@ public class Example_ClientBuilder
         [Put("anything")]
         Task<Response<TestResponse>> PutAnythingAsync(TestData d);
 
-        /* Validate with GetSuccessfulData */
+        /* Validated with GetSuccessfulData */
         [Post("anything")]
         Task<TestResponse> PostAnythingSuccessfulAsync(TestData d);
+
+        /* Internal settings */
+        ClientInfo GetInternalClient();
+        void SetAuthorizationBearer(string jwt);
     }
 
 }
