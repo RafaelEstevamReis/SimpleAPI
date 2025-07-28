@@ -440,7 +440,17 @@ namespace Simple.API
                 }
                 else
                 {
-                    if (DeserializeJValueOverride == null && DeserializeJObjectOverride == null)
+                    if (content.StartsWith("<")) // xml
+                    {
+#if NETSTANDARD1_1
+                        throw new NotSupportedException("NET 1.1 do not support XML serialization");
+#else
+                        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+                        using var reader = new System.IO.StringReader(content);
+                        data = (T)serializer.Deserialize(reader);
+#endif
+                    }
+                    else if (DeserializeJValueOverride == null && DeserializeJObjectOverride == null)
                     {
                         data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
                     }
