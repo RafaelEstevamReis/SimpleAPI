@@ -3,7 +3,6 @@ namespace Simple.API;
 
 using Simple.API.ClientBuilderAttributes;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ public class ClientBuilder : DispatchProxy
 
     static readonly MethodInfo[] MethodsOfClientInfo = TypeOfClientInfo.GetMethods();
     static readonly MethodInfo[] MethodsOfResponseExtensions = TypeOfResponseExtensions.GetMethods();
-
 
     internal ClientInfo client;
     public ClientBuilder()
@@ -76,14 +74,8 @@ public class ClientBuilder : DispatchProxy
             var allMethods = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync)).ToArray();
             methodToCall = allMethods.FirstOrDefault().MakeGenericMethod(innerType);
 
-            if (args.Length == 0)
-            {
-                methodArgs = [httpMethod.Route, null];
-            }
-            else
-            {
-                methodArgs = [httpMethod.Route, args[0]];
-            }
+            if (args.Length == 0) methodArgs = [httpMethod.Route, null];
+            else methodArgs = [httpMethod.Route, args[0]];
         }
         else if (postAttr != null)
         {
