@@ -2,6 +2,17 @@
 
 using System;
 
+[AttributeUsage(AttributeTargets.Interface)]
+public class TimeoutAttribute : Attribute
+{
+    public TimeSpan Timeout { get; protected set; }
+
+    public TimeoutAttribute(int timeoutInSeconds)
+    {
+        Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+    }
+}
+
 
 public class MethodAttribute : Attribute
 {

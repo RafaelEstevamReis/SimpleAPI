@@ -29,6 +29,13 @@ public class ClientBuilder : DispatchProxy
         var client = new ClientInfo(uri, clientHandler);
         (proxy as ClientBuilder).client = client;
 
+        var typeT = typeof(T);
+        var timeoutAttr = typeT.GetCustomAttribute<TimeoutAttribute>();
+        if(timeoutAttr != null)
+        {
+            client.Timeout = timeoutAttr.Timeout;
+        }
+
         return proxy;
     }
 
