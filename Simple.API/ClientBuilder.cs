@@ -46,6 +46,13 @@ public class ClientBuilder : DispatchProxy
         {
             return client;
         }
+        if (targetMethod.Name == "SetAuthorizationBearer")
+        {
+            if (args.Length != 1) throw new ArgumentException("Expcted `string` bearer parameter");
+
+            client.SetAuthorizationBearer((string)args[0]);
+            return null; // void
+        }
 
         // Get the [METHOD] attribute
         MethodAttribute getAttr = targetMethod.GetCustomAttribute<GetAttribute>();
