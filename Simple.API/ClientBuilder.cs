@@ -41,6 +41,12 @@ public class ClientBuilder : DispatchProxy
 
     protected override object Invoke(MethodInfo targetMethod, object[] args)
     {
+        // Internal Methods
+        if(targetMethod.Name == "GetInternalClient")
+        {
+            return client;
+        }
+
         // Get the [METHOD] attribute
         MethodAttribute getAttr = targetMethod.GetCustomAttribute<GetAttribute>();
         MethodAttribute postAttr = targetMethod.GetCustomAttribute<PostAttribute>();
