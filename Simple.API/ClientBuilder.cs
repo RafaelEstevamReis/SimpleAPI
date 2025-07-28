@@ -4,6 +4,7 @@ namespace Simple.API;
 using Simple.API.ClientBuilderAttributes;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -21,11 +22,13 @@ public class ClientBuilder : DispatchProxy
     {
     }
 
-    public static T Create<T>(string uri)
+    public static T Create<T>(string uri, HttpMessageHandler clientHandler = null)
         where T : class
     {
         var proxy = Create<T, ClientBuilder>();
-        (proxy as ClientBuilder).client = new ClientInfo(uri); // Pass Uri to ClientInfo
+        var client = new ClientInfo(uri, clientHandler);
+        (proxy as ClientBuilder).client = client;
+
         return proxy;
     }
 
