@@ -1,6 +1,8 @@
 ﻿namespace Simple.API;
 
+using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 public static class ResponseExtensions
@@ -33,6 +35,27 @@ public static class ResponseExtensions
 
         using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
         dataStream.CopyTo(fs);
+    }
+
+    public static async Task ReadSSE(this Response<Stream> response, Action<string> textEvents, CancellationToken token)
+    {
+        using var reader = new StreamReader(response.Data);
+        while (!reader.EndOfStream && !token.IsCancellationRequested)
+        {
+            string line = await reader.ReadLineAsync();
+            textEvents(line);
+        }
+    }
+    public static async Task ReadSSE(this Task<Response<Stream>> responseTask, Action<string> textEvents, CancellationToken token)
+        => await (await responseTask).ReadSSE(textEvents: textEvents, token);
+
+    public static async Task ReadSSE(this Response<Stream> response, Action<Newtonsoft.Json.Linq.JObject> jEvents, CancellationToken token)
+    {
+        await response.ReadSSE(textEvents: (l) => jEvents(Newtonsoft.Json.Linq.JObject.Parse(l)), token);
+    }
+    public static async Task ReadSSE(this Task<Response<Stream>> responseTask, Action<Newtonsoft.Json.Linq.JObject> jEvents, CancellationToken token)
+    {
+        await (await responseTask).ReadSSE(jEvents: jEvents, token);
     }
 #endif
 }
