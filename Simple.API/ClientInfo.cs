@@ -352,7 +352,7 @@ namespace Simple.API
             if (typeof(T) == typeof(System.IO.Stream))
             {
                 // WITHOUT USING
-                var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseContentRead);
+                var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
                 return await processResponseAsync<T>(uri, response, start);
             }
             else
