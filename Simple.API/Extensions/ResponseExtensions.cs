@@ -39,6 +39,7 @@ public static class ResponseExtensions
 
     public static async Task ReadSSE(this Response<Stream> response, Action<string> textEvents, CancellationToken token)
     {
+        response.EnsureSuccessStatusCode();
         using var reader = new StreamReader(response.Data);
         while (!reader.EndOfStream && !token.IsCancellationRequested)
         {
