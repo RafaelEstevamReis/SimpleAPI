@@ -52,7 +52,30 @@ public static class ResponseExtensions
 
     public static async Task ReadSSE(this Response<Stream> response, Action<Newtonsoft.Json.Linq.JObject> jEvents, CancellationToken token)
     {
-        await response.ReadSSE(textEvents: (l) => jEvents(Newtonsoft.Json.Linq.JObject.Parse(l)), token);
+        await response.ReadSSE(textEvents: (l) =>
+        {
+            if (string.IsNullOrEmpty(l)) return;
+
+            var text = l;
+            if (!text.StartsWith("{") && !text.StartsWith("["))
+            {
+                text = "{" + text + "}"; // Rebuild object
+            }
+            try
+            {
+                jEvents(Newtonsoft.Json.Linq.JObject.Parse(text));
+            }
+            catch (Exception ex)
+            {
+                var jEv = Newtonsoft.Json.Linq.JObject.FromObject(new
+                {
+                    OriginalLine = l,
+                    ExceptionMessage = ex.Message,
+                    ExceptionContent = ex.ToString(),
+                });
+                jEvents(jEv);
+            }
+        }, token);
     }
     public static async Task ReadSSE(this Task<Response<Stream>> responseTask, Action<Newtonsoft.Json.Linq.JObject> jEvents, CancellationToken token)
     {
