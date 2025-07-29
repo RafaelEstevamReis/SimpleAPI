@@ -348,8 +348,18 @@ namespace Simple.API
         {
             BeforeSend?.Invoke(this, message);
             DateTime start = DateTime.Now; // not include BeforeSend execution
-            using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-            return await processResponseAsync<T>(uri, response, start);
+
+            if (typeof(T) == typeof(System.IO.Stream))
+            {
+                // WITHOUT USING
+                var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseContentRead);
+                return await processResponseAsync<T>(uri, response, start);
+            }
+            else
+            {
+                using var response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+                return await processResponseAsync<T>(uri, response, start);
+            }
         }
 
         private HttpContent buildJsonContent(object value, HttpRequestMessage msg)
