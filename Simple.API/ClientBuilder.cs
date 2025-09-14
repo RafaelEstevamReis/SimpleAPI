@@ -3,6 +3,7 @@ namespace Simple.API;
 
 using Simple.API.ClientBuilderAttributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -65,6 +66,14 @@ public class ClientBuilder : DispatchProxy
         // Ensure the method returns a Task<T>
         if (!TypeOfTask.IsAssignableFrom(targetMethod.ReturnType)) throw new InvalidOperationException($"Method {targetMethod.Name} must return a Task");
 
+        // Check InRoute
+        var methodParams = targetMethod.GetParameters();
+        var inRoutes = methodParams.Select(o => o.GetCustomAttribute<InRouteAttribute>()).ToArray();
+        var hasAnyInRoutes = inRoutes.Any(o => o != null);
+        var hasRouteParam = httpMethod.Route.Contains('{');
+        if (hasAnyInRoutes && !hasRouteParam) throw new InvalidOperationException($"Attribute {nameof(InRouteAttribute)} must be used in a route with parameters");
+        if (!hasAnyInRoutes && hasRouteParam) throw new InvalidOperationException($"Route parameters must be used with {nameof(InRouteAttribute)}");
+
         /* Return Type */
         // Get the return type (e.g., Response<TestResponse> from Task<Response<TestResponse>>)
         var taskReturnType = targetMethod.ReturnType.IsGenericType ? targetMethod.ReturnType.GetGenericArguments()[0] : null;
@@ -86,10 +95,40 @@ public class ClientBuilder : DispatchProxy
         }
 
         /* Extract Route information */
+        string route = httpMethod.Route;
+        if (hasRouteParam)
+        {
+            Dictionary<string, string> dicParams = [];
+            // Parse route params
+            for (int i = 0; i < inRoutes.Length; i++)
+            {
+                if (inRoutes[i] == null) continue;
 
+                // Get 'Key' in [inRoutes] and 'value' in [args]
+                var name = methodParams[i].Name;
+                var value = args[i];
+
+                dicParams[name] = value?.ToString() ?? "";
+            }
+
+            // Replace route
+            foreach (var pair in dicParams)
+            {
+                string key = $"{{{pair.Key}}}";
+                route = route.Replace(key, pair.Value);
+            }
+
+            // rebuild args
+            List<object> lstParams = new List<object>(args);
+            for (int i = lstParams.Count - 1; i >= 0; i--)
+            {
+                if (inRoutes[i] != null) lstParams.RemoveAt(i);
+            }
+            args = lstParams.ToArray();
+        }
 
         /* Method Selection */
-        selectMethodToExecute(args, httpMethod, innerType, out MethodInfo methodToCall, out object[] methodArgs);
+        selectMethodToExecute(route, args, httpMethod, innerType, out MethodInfo methodToCall, out object[] methodArgs);
         // Call ClientInfo.[Method]Async<T> dynamically with the inner type
         var task = (Task)methodToCall.Invoke(client, methodArgs);
 
@@ -103,28 +142,28 @@ public class ClientBuilder : DispatchProxy
         return task;
     }
 
-    private static void selectMethodToExecute(object[] args, MethodAttribute httpMethod, Type innerType, out MethodInfo methodToCall, out object[] methodArgs)
+    private static void selectMethodToExecute(string route, object[] args, MethodAttribute httpMethod, Type innerType, out MethodInfo methodToCall, out object[] methodArgs)
     {
         if (httpMethod is GetAttribute)
         {
             methodToCall = MethodGetAsync.MakeGenericMethod(innerType);
 
-            if (args.Length == 0) methodArgs = [httpMethod.Route];
-            else methodArgs = [httpMethod.Route, args[0]];
+            if (args.Length == 0) methodArgs = [route];
+            else methodArgs = [route, args[0]];
         }
         else if (httpMethod is PostAttribute)
         {
             methodToCall = MethodPostAsync.MakeGenericMethod(innerType);
 
-            if (args.Length == 0) methodArgs = [httpMethod.Route, null];
-            else methodArgs = [httpMethod.Route, args[0]];
+            if (args.Length == 0) methodArgs = [route, null];
+            else methodArgs = [route, args[0]];
         }
         else if (httpMethod is PutAttribute)
         {
             methodToCall = MethodPutAsync.MakeGenericMethod(innerType);
 
-            if (args.Length == 0) methodArgs = [httpMethod.Route, null];
-            else methodArgs = [httpMethod.Route, args[0]];
+            if (args.Length == 0) methodArgs = [route, null];
+            else methodArgs = [route, args[0]];
         }
         else throw new NotSupportedException("HttpMethod not supported");
     }
