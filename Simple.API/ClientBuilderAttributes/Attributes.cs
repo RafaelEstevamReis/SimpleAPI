@@ -2,6 +2,7 @@
 
 using System;
 
+/* Interface Attributes */
 [AttributeUsage(AttributeTargets.Interface)]
 public class TimeoutAttribute : Attribute
 {
@@ -13,7 +14,7 @@ public class TimeoutAttribute : Attribute
     }
 }
 
-
+/* Method Attributes */
 public class MethodAttribute : Attribute
 {
     public string Route { get; protected set; }
@@ -40,3 +41,8 @@ public class DeleteAttribute : MethodAttribute
 {
     public DeleteAttribute(string route) => Route = route;
 }
+
+/* Parameter Attributes */
+[AttributeUsage(AttributeTargets.Parameter)]
+public class InRouteAttribute : Attribute
+{ }
