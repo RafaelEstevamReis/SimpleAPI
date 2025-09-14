@@ -106,7 +106,7 @@ public class ClientBuilder : DispatchProxy
 
             if (args.Length == 0)
             {
-                methodArgs = [httpMethod.Route, null];
+                methodArgs = [httpMethod.Route];
             }
             else methodArgs = [httpMethod.Route, args[0]];
         }
