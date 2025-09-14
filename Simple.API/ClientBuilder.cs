@@ -31,7 +31,7 @@ public class ClientBuilder : DispatchProxy
 
         var typeT = typeof(T);
         var timeoutAttr = typeT.GetCustomAttribute<TimeoutAttribute>();
-        if(timeoutAttr != null)
+        if (timeoutAttr != null)
         {
             client.Timeout = timeoutAttr.Timeout;
         }
@@ -42,7 +42,7 @@ public class ClientBuilder : DispatchProxy
     protected override object Invoke(MethodInfo targetMethod, object[] args)
     {
         // Internal Methods
-        if(targetMethod.Name == "GetInternalClient")
+        if (targetMethod.Name == "GetInternalClient")
         {
             return client;
         }
@@ -51,6 +51,13 @@ public class ClientBuilder : DispatchProxy
             if (args.Length != 1) throw new ArgumentException("Expcted `string` bearer parameter");
 
             client.SetAuthorizationBearer((string)args[0]);
+            return null; // void
+        }
+        if (targetMethod.Name == "SetHeader")
+        {
+            if (args.Length != 2) throw new ArgumentException("Expcted `string` header key and value parameters");
+
+            client.SetHeader((string)args[0], (string)args[1]);
             return null; // void
         }
 
@@ -97,7 +104,10 @@ public class ClientBuilder : DispatchProxy
             var allMethods = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync)).ToArray();
             methodToCall = allMethods.FirstOrDefault().MakeGenericMethod(innerType);
 
-            if (args.Length == 0) methodArgs = [httpMethod.Route, null];
+            if (args.Length == 0)
+            {
+                methodArgs = [httpMethod.Route, null];
+            }
             else methodArgs = [httpMethod.Route, args[0]];
         }
         else if (postAttr != null)

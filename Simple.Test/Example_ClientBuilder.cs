@@ -32,7 +32,8 @@ public class Example_ClientBuilder
         var client = demoClient.GetInternalClient();
         // Setting authorization
         demoClient.SetAuthorizationBearer("Your JWT here");
-        
+        demoClient.SetHeader("Api-Key", "MyApiKey");
+
         ;
         Console.WriteLine("End");
     }
@@ -60,6 +61,7 @@ public class Example_ClientBuilder
         /* Internal settings */
         ClientInfo GetInternalClient();
         void SetAuthorizationBearer(string jwt);
+        void SetHeader(string key, string value);
     }
 
 }

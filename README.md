@@ -119,6 +119,7 @@ public interface IMyAPI
     /* Internal settings and interactions */
     ClientInfo GetInternalClient();
     void SetAuthorizationBearer(string jwt);
+    void SetHeader(string key, string value);
 }
 ~~~
 
@@ -127,6 +128,7 @@ Then you will be able to just:
 ~~~ C#
 var myClient = ClientBuilder.Create<IMyAPI>("https://httpbin.org/");
 myClient.SetAuthorizationBearer("Your JWT here");
+myClient.SetHeader("Api-Key", "MyApiKey");
 
 // Standard GET
 var resultGet = await myClient.GetAnythingAsync();
