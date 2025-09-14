@@ -10,7 +10,7 @@ A simple C# REST API client implementation
 - [Table of Contents](#table-of-contents)
   - [Compatibility](#compatibility)
   - [Installing](#installing)
-  - [Use](#use)
+  - [Basic Use](#basic-use)
 <!-- /TOC -->
 
 ## Compatibility
@@ -35,7 +35,7 @@ Get from NuGet and start testing
 
 > PM> [Install-Package Simple.API](https://www.nuget.org/packages/Simple.API)
 
-## Use
+## Basic Use
 
 How to GET a resource at `https://httpbin.org/anything/42`
 ~~~C#
@@ -45,15 +45,27 @@ var client = new ClientInfo("https://httpbin.org/");
 
 /* GET */
 // no params
-var get = await client.GetAsync<TestResponse>("anything");
-// object builded param
+var getResponse = await client.GetAsync<TestResponse>("anything");
+// object builded parameter
 var t = await client.GetAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
 /* POST */
-var post = await client.PostAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
+var postResponse = await client.PostAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
 /* And all others */
 var putResponse = await client.PutAsync("anything", data);
 var patchResponse = await client.PatchAsync("anything", data);
 var deleteResponse = await client.DeleteAsync("anything");
+~~~
+
+The response object contains the original data, status code, request and response headers
+
+~~~C#
+if(!putResponse.IsSuccessStatusCode) 
+  Console.WriteLine("☹️");
+if(patchResponse.StatusCode == HttpStatusCode.Forbidden) 
+  Console.WriteLine("🔒");
+
+// Validate response, throws if necessary and gets data
+var data = getResponse.GetSuccessfulData();
 ~~~
 
 Authentication:
@@ -80,13 +92,3 @@ bool valid = jwt.Content.GetExp > DateTime.Now;
 // Or parse your custom Model
 var customJwt = JWT<YourModel>.Parse(token);
 ~~~
-
-The response object contains the original data, status code, request and response headers
-
-~~~C#
-if(!putResponse.IsSuccessStatusCode) 
-  Console.WriteLine("☹️");
-if(patchResponse.StatusCode == HttpStatusCode.Forbidden) 
-  Console.WriteLine("🔒");
-~~~
-
