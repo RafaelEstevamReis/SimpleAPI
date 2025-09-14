@@ -1,6 +1,6 @@
 ﻿namespace Simple.Test;
 
-public class TestResponse
+public record TestResponse
 {
     public Args args { get; set; }
     public Headers headers { get; set; }
@@ -8,7 +8,7 @@ public class TestResponse
     public string url { get; set; }
     public TestData json { get; set; }
 }
-public class Args { }
+public record Args { }
 
 public class Headers
 {
