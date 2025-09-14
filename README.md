@@ -1,6 +1,6 @@
 # SimpleAPI
 [![.NET](https://github.com/RafaelEstevamReis/SimpleAPI/actions/workflows/dotnet.yml/badge.svg)](https://github.com/RafaelEstevamReis/SimpleAPI)
-[![NuGet](https://buildstats.info/nuget/Simple.API)](https://www.nuget.org/packages/Simple.API)
+[![NuGet](https://img.shields.io/nuget/v/Simple.API)](https://www.nuget.org/packages/Simple.API)
 
 A simple C# REST API client implementation
 
