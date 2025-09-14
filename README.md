@@ -11,6 +11,7 @@ A simple C# REST API client implementation
   - [Compatibility](#compatibility)
   - [Installing](#installing)
   - [Basic Use](#basic-use)
+  - [API Builder](#api-builder)
 <!-- /TOC -->
 
 ## Compatibility
@@ -92,3 +93,44 @@ bool valid = jwt.Content.GetExp > DateTime.Now;
 // Or parse your custom Model
 var customJwt = JWT<YourModel>.Parse(token);
 ~~~
+
+
+## API Builder
+
+This library supports implicit implementation, just create an interface for the API and the builder takes care of the implementation:
+
+~~~ C#
+public interface IMyAPI
+{
+    /* Standard Responses with response metadata */
+    [Get("anything")]
+    Task<Response<TestResponse>> GetAnythingAsync();
+
+    [Post("anything")]
+    Task<Response<TestResponse>> PostNothingAsync();
+
+    /* Validated with GetSuccessfulData */
+    [Get("anything")]
+    Task<TestResponse> GetAnythingSuccessfulAsync();
+
+    [Post("anything")]
+    Task<TestResponse> PostAnythingSuccessfulAsync(TestData d);
+
+    /* Internal settings and interactions */
+    ClientInfo GetInternalClient();
+    void SetAuthorizationBearer(string jwt);
+}
+~~~
+
+Then you will be able to just:
+
+~~~ C#
+var myClient = ClientBuilder.Create<IMyAPI>("https://httpbin.org/");
+myClient.SetAuthorizationBearer("Your JWT here");
+
+// Standard GET
+var resultGet = await myClient.GetAnythingAsync();
+// Post with validated result
+var resultPost = await myClient.PostAnythingSuccessfulAsync(new { a = 1 });
+~~~
+
