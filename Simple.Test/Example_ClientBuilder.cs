@@ -22,6 +22,9 @@ public class Example_ClientBuilder
             Number = 42
         });
 
+        // In route parameters
+        var resultInRoute = await demoClient.GetAnythingInRouteAsync(42, Guid.NewGuid());
+
         // Using GetSuccessfulData on return
         var resultPostD = await demoClient.PostAnythingSuccessfulAsync(new TestData
         {
@@ -57,6 +60,10 @@ public class Example_ClientBuilder
         /* Validated with GetSuccessfulData */
         [Post("anything")]
         Task<TestResponse> PostAnythingSuccessfulAsync(TestData d);
+
+        /* In route parameters */
+        [Get("anything/{id}/{uid}")]
+        Task<Response<TestResponse>> GetAnythingInRouteAsync([InRoute] int id, [InRoute] Guid uid);
 
         /* Internal settings */
         ClientInfo GetInternalClient();

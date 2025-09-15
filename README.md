@@ -94,6 +94,7 @@ bool valid = jwt.Content.GetExp > DateTime.Now;
 var customJwt = JWT<YourModel>.Parse(token);
 ~~~
 
+See full example at: [Simple.Test/Example_ClientInfo.cs](https://github.com/RafaelEstevamReis/SimpleAPI/blob/main/Simple.Test/Example_ClientInfo.cs)
 
 ## API Builder
 
@@ -136,3 +137,4 @@ var resultGet = await myClient.GetAnythingAsync();
 var resultPost = await myClient.PostAnythingSuccessfulAsync(new { a = 1 });
 ~~~
 
+See full example at: [Simple.Test/Example_ClientBuilder.cs](https://github.com/RafaelEstevamReis/SimpleAPI/blob/main/Simple.Test/Example_ClientBuilder.cs)
