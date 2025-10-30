@@ -16,7 +16,7 @@ class Example_ClientInfo
             Id = 1,
             Uid = Guid.NewGuid(),
             Text = "This is a test",
-            //Number = 42,
+            Number = 42,
             DoubleFloatPoint = 3.14
         };
 
