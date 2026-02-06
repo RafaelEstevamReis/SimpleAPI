@@ -9,6 +9,9 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Creates a new Client instance
+/// </summary>
 public class ClientBuilder : DispatchProxy
 {
     static readonly Type TypeOfTask = typeof(Task);
@@ -26,7 +29,9 @@ public class ClientBuilder : DispatchProxy
         .First(); // Exception if not found
 
     internal ClientInfo client;
-
+    /// <summary>
+    /// Creates a new instance for the specified Interface
+    /// </summary>
     public static T Create<T>(string uri, HttpMessageHandler clientHandler = null)
         where T : class
     {
@@ -47,7 +52,10 @@ public class ClientBuilder : DispatchProxy
 
         return proxy;
     }
-
+    /// <summary>
+    /// Whenever any method on the generated proxy type is called, this method
+    /// will be invoked to dispatch control.
+    /// </summary>
     protected override object Invoke(MethodInfo targetMethod, object[] args)
     {
         // Internal Methods
