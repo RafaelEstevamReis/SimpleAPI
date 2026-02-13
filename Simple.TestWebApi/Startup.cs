@@ -1,11 +1,11 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using System.Text;
 
 namespace Simple.TestWebApi
 {
@@ -45,28 +45,33 @@ namespace Simple.TestWebApi
             // Swagger stuff
             services.AddSwaggerGen(c =>
             {
-                // Auth stuff in the swagger stuff
+                var schemeId = JwtBearerDefaults.AuthenticationScheme;
+
+                // 1. Criamos o esquema SEM a propriedade Reference (que não existe mais)
                 var jwtSecurityScheme = new OpenApiSecurityScheme
                 {
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    Name = "JWT Authentication",
+                    Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!"
                 };
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+                // 2. Registramos a definição usando o ID
+                c.AddSecurityDefinition(schemeId, jwtSecurityScheme);
+
+                // 3. Criamos o requisito usando a nova classe de referência
+                c.AddSecurityRequirement(document =>
                 {
-                    { jwtSecurityScheme, System.Array.Empty<string>() }
+                    OpenApiSecuritySchemeReference schemeRef = new("Bearer");
+                    OpenApiSecurityRequirement requirement = new()
+                    {
+                        [schemeRef] = []
+                    };
+                    return requirement;
                 });
-                // Normal swagger stuff
+
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple.TestWebApi", Version = "v1" });
             });
         }
