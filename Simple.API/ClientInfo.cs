@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -193,10 +195,8 @@ namespace Simple.API
         public async Task<Response<T>> PostAsync<T>(string service, object value)
         {
             var uri = new Uri(BaseUri, service);
-
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = buildJsonContent(value, msg);
-
+            msg.Content = buildObjectContent(value, msg);
             return await sendMessageAsync<T>(uri, msg);
         }
         /// <summary>
@@ -219,7 +219,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
-            msg.Content = buildJsonContent(value, msg);
+            msg.Content = buildObjectContent(value, msg);
             return await sendMessageAsync(msg);
         }
 
@@ -236,6 +236,19 @@ namespace Simple.API
             if (content is not null) msg.Content = content;
 
             return await sendMessageAsync<T>(uri, msg);
+        }
+        /// <summary>
+        /// Sends a Post request with specified content and process the returned content
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        /// <param name="content">Content to be sent</param>
+        public async Task<Response> PostAsync(string service, HttpContent content)
+        {
+            var uri = new Uri(BaseUri, service);
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri);
+            if (content is not null) msg.Content = content;
+
+            return await sendMessageAsync(msg);
         }
 
         /* PUT */
@@ -362,6 +375,25 @@ namespace Simple.API
             }
         }
 
+        private HttpContent buildObjectContent(object value, HttpRequestMessage msg)
+        {
+            if (value is byte[] bVal)
+            {
+                var content = new ByteArrayContent(bVal);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                return content;
+            }
+            else if (value is Stream stream)
+            {
+                var content = new StreamContent(stream);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                return content;
+            }
+            else
+            {
+                return buildJsonContent(value, msg);
+            }
+        }
         private HttpContent buildJsonContent(object value, HttpRequestMessage msg)
         {
             var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value, new Newtonsoft.Json.JsonSerializerSettings()
