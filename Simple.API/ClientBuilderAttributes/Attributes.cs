@@ -15,7 +15,7 @@ public class TimeoutAttribute : Attribute
 }
 
 /* Method Attributes */
-public class MethodAttribute : Attribute
+public abstract class MethodAttribute : Attribute
 {
     public string Route { get; protected set; }
 }
