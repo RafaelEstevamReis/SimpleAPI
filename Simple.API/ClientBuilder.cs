@@ -20,6 +20,7 @@ public class ClientBuilder : DispatchProxy
     static readonly MethodInfo MethodGetAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync)).First();
     static readonly MethodInfo MethodPostAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PostAsync)).First();
     static readonly MethodInfo MethodPutAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PutAsync)).First();
+    static readonly MethodInfo MethodDeleteAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.DeleteAsync)).First();
 
     static readonly Type TypeOfResponseExtensions = typeof(ResponseExtensions);
     static readonly MethodInfo MethodGetSuccessfulDataTask = TypeOfResponseExtensions
@@ -144,7 +145,7 @@ public class ClientBuilder : DispatchProxy
         }
 
         // rebuild args
-        List<object> lstParams = new List<object>(args);
+        List<object> lstParams = [.. args];
         for (int i = lstParams.Count - 1; i >= 0; i--)
         {
             if (inRoutes[i] != null) lstParams.RemoveAt(i);
@@ -171,6 +172,13 @@ public class ClientBuilder : DispatchProxy
         else if (httpMethod is PutAttribute)
         {
             methodToCall = MethodPutAsync.MakeGenericMethod(innerType);
+
+            if (args.Length == 0) methodArgs = [route, null];
+            else methodArgs = [route, args[0]];
+        }
+        else if (httpMethod is DeleteAttribute)
+        {
+            methodToCall = MethodDeleteAsync.MakeGenericMethod(innerType);
 
             if (args.Length == 0) methodArgs = [route, null];
             else methodArgs = [route, args[0]];

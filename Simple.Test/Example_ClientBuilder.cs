@@ -9,7 +9,7 @@ public class Example_ClientBuilder
 {
     internal static async Task Run()
     {
-        var demoClient = ClientBuilder.Create<IDemo>("https://httpbin.org/");
+        var demoClient = ClientBuilder.Create<IDemo>("https://httpbin.org123/");
 
         var resultGet = await demoClient.GetAnythingAsync();
         var resultNPost = await demoClient.PostNothingAsync();
@@ -26,6 +26,7 @@ public class Example_ClientBuilder
         var resultInRoute = await demoClient.GetAnythingInRouteAsync(42, Guid.NewGuid());
 
         // Using GetSuccessfulData on return
+        var resultGetD = await demoClient.GetAnythingSuccessfulAsync();
         var resultPostD = await demoClient.PostAnythingSuccessfulAsync(new TestData
         {
             Number = 42
@@ -58,6 +59,8 @@ public class Example_ClientBuilder
         Task<Response<TestResponse>> PutAnythingAsync(TestData d);
 
         /* Validated with GetSuccessfulData */
+        [Get("anything")]
+        Task<TestResponse> GetAnythingSuccessfulAsync();
         [Post("anything")]
         Task<TestResponse> PostAnythingSuccessfulAsync(TestData d);
 
