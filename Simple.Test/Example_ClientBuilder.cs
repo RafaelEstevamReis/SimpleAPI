@@ -9,7 +9,7 @@ public class Example_ClientBuilder
 {
     internal static async Task Run()
     {
-        var demoClient = ClientBuilder.Create<IDemo>("https://httpbin.org123/");
+        var demoClient = ClientBuilder.Create<IDemo>("https://httpbin.org/");
 
         var resultGet = await demoClient.GetAnythingAsync();
         var resultNPost = await demoClient.PostNothingAsync();
@@ -63,6 +63,12 @@ public class Example_ClientBuilder
         Task<TestResponse> GetAnythingSuccessfulAsync();
         [Post("anything")]
         Task<TestResponse> PostAnythingSuccessfulAsync(TestData d);
+
+        /* No DTO */
+        [Get("anything")]
+        Task<Response> GetAnythingSimpleAsync();
+        [Post("anything")]
+        Task<Response> PostAnythingSimpleAsync(TestData d);
 
         /* In route parameters */
         [Get("anything/{id}/{uid}")]
