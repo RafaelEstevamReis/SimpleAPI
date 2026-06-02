@@ -37,6 +37,11 @@ public class PutAttribute : MethodAttribute
     public PutAttribute(string route) => Route = route;
 }
 [AttributeUsage(AttributeTargets.Method)]
+public class PatchAttribute : MethodAttribute
+{
+    public PatchAttribute(string route) => Route = route;
+}
+[AttributeUsage(AttributeTargets.Method)]
 public class DeleteAttribute : MethodAttribute
 {
     public DeleteAttribute(string route) => Route = route;

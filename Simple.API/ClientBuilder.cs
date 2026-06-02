@@ -20,6 +20,7 @@ public class ClientBuilder : DispatchProxy
     static readonly MethodInfo MethodGetAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync)).First();
     static readonly MethodInfo MethodPostAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PostAsync)).First();
     static readonly MethodInfo MethodPutAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PutAsync)).First();
+    static readonly MethodInfo MethodPatchAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PatchAsync)).First();
     static readonly MethodInfo MethodDeleteAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.DeleteAsync)).First();
 
     static readonly Type TypeOfResponseExtensions = typeof(ResponseExtensions);
@@ -176,6 +177,13 @@ public class ClientBuilder : DispatchProxy
             if (args.Length == 0) methodArgs = [route, null];
             else methodArgs = [route, args[0]];
         }
+        else if (httpMethod is PatchAttribute)
+        {
+            methodToCall = MethodPutAsync.MakeGenericMethod(innerType);
+
+            if (args.Length == 0) methodArgs = [route, null];
+            else methodArgs = [route, args[0]];
+        }
         else if (httpMethod is DeleteAttribute)
         {
             methodToCall = MethodDeleteAsync.MakeGenericMethod(innerType);
@@ -192,9 +200,10 @@ public class ClientBuilder : DispatchProxy
         MethodAttribute getAttr = targetMethod.GetCustomAttribute<GetAttribute>();
         MethodAttribute postAttr = targetMethod.GetCustomAttribute<PostAttribute>();
         MethodAttribute putAttr = targetMethod.GetCustomAttribute<PutAttribute>();
+        MethodAttribute patchAttr = targetMethod.GetCustomAttribute<PatchAttribute>();
         MethodAttribute deleteAttr = targetMethod.GetCustomAttribute<DeleteAttribute>();
 
-        return getAttr ?? postAttr ?? putAttr ?? deleteAttr;
+        return getAttr ?? postAttr ?? putAttr ?? patchAttr ?? deleteAttr;
     }
 
     private bool processInternalFunctions(MethodInfo targetMethod, object[] args, out object intRet)
