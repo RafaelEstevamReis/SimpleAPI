@@ -17,6 +17,10 @@ public class Example_ClientBuilder
         {
             Number = 42
         });
+        var resultPatch = await demoClient.PatchAnythingAsync(new TestData
+        {
+            Number = 42
+        });
         var resultPut = await demoClient.PutAnythingAsync(new TestData
         {
             Number = 42
@@ -57,6 +61,9 @@ public class Example_ClientBuilder
 
         [Put("anything")]
         Task<Response<TestResponse>> PutAnythingAsync(TestData d);
+
+        [Patch("anything")]
+        Task<Response<TestResponse>> PatchAnythingAsync(TestData d);
 
         /* Validated with GetSuccessfulData */
         [Get("anything")]
