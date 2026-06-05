@@ -47,7 +47,7 @@ public class Example_ClientBuilder
     }
 
     [Timeout(timeoutInSeconds: 20)] // Optional Attribute for setting Client's Timeout
-    public interface IDemo
+    public interface IDemo : IBuildedClientInternalFunctions
     {
         /* Normal Responses */
         [Get("anything")]
