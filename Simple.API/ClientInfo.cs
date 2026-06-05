@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,16 @@ namespace Simple.API
         /// <summary>
         /// Ignore Nulls when building parameteres
         /// </summary>
-        public bool NullParameterHandlingPolicy_IgnoreNulls = true;
+        public bool NullParameterHandlingPolicy_IgnoreNulls
+        {
+            get => JsonSerializerSettings.NullValueHandling == NullValueHandling.Ignore;
+            set => JsonSerializerSettings.NullValueHandling = value ? NullValueHandling.Ignore : NullValueHandling.Include;
+        }
+
+        /// <summary>
+        /// Serialization Settings
+        /// </summary>
+        public JsonSerializerSettings JsonSerializerSettings { get; }
 
         /// <summary>
         /// Defines the default timeout for new HttpClient instances created by the ClientInfo constructor.
@@ -72,6 +82,12 @@ namespace Simple.API
         {
             if (!baseUrl.EndsWith("/")) baseUrl += '/';
             BaseUri = new Uri(baseUrl);
+
+            JsonSerializerSettings = new JsonSerializerSettings()
+            {
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+                NullValueHandling = NullValueHandling.Ignore,
+            };
 
             if (clientHandler == null) clientHandler = new HttpClientHandler();
             if (clientHandler is HttpClientHandler hdl)
@@ -396,10 +412,7 @@ namespace Simple.API
         }
         private HttpContent buildJsonContent(object value, HttpRequestMessage msg)
         {
-            var jsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value, new Newtonsoft.Json.JsonSerializerSettings()
-            {
-                NullValueHandling = NullParameterHandlingPolicy_IgnoreNulls ? Newtonsoft.Json.NullValueHandling.Ignore : Newtonsoft.Json.NullValueHandling.Include,
-            });
+            var jsonValue = JsonConvert.SerializeObject(value, JsonSerializerSettings);
 
             if (JsonSerializeOverride != null)
             {
@@ -431,7 +444,7 @@ namespace Simple.API
                 data = (T)(object)await response.Content.ReadAsByteArrayAsync();
                 binary = true;
             }
-            else if (typeof(T) == typeof(System.IO.Stream))
+            else if (typeof(T) == typeof(Stream))
             {
                 data = (T)(object)await response.Content.ReadAsStreamAsync();
                 binary = true;
@@ -488,13 +501,13 @@ namespace Simple.API
                         throw new NotSupportedException("NET 1.1 do not support XML serialization");
 #else
                         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
-                        using var reader = new System.IO.StringReader(content);
+                        using var reader = new StringReader(content);
                         data = (T)serializer.Deserialize(reader);
 #endif
                     }
                     else if (DeserializeJValueOverride == null && DeserializeJObjectOverride == null)
                     {
-                        data = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+                        data = JsonConvert.DeserializeObject<T>(content, JsonSerializerSettings);
                     }
                     else
                     {
