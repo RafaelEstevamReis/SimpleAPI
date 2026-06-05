@@ -238,4 +238,11 @@ public class ClientBuilder : DispatchProxy
 
 }
 
+public interface IBuildedClientInternalFunctions
+{
+    ClientInfo GetInternalClient();
+    void SetAuthorizationBearer(string bearer);
+    void SetHeader(string key,  string value);
+}
+
 #endif
