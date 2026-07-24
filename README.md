@@ -47,7 +47,7 @@ var client = new ClientInfo("https://httpbin.org/");
 /* GET */
 // no params
 var getResponse = await client.GetAsync<TestResponse>("anything");
-// object builded parameter
+// object built parameter
 var t = await client.GetAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
 /* POST */
 var postResponse = await client.PostAsync<TestResponse>("anything", new { id = "1234", value = 12.34 });
@@ -87,7 +87,7 @@ JWT parsing:
 ~~~C#
 // Parse JWT
 var jwt = JWT.Parse(token);
-// Access commom fields
+// Access common fields
 bool valid = jwt.Content.GetExp > DateTime.Now;
 
 // Or parse your custom Model
