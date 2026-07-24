@@ -30,7 +30,7 @@ public static class ResponseExtensions
     }
     public static async Task SaveSuccessfulData(this Task<Response<Stream>> responseTask, string filePath)
     {
-        using var dataStream = (await responseTask).GetSuccessfulData(); // Throwns exception before touches filesystem
+        using var dataStream = (await responseTask).GetSuccessfulData(); // Throws exception before touching filesystem
         var fi = new FileInfo(filePath);
         if (!fi.Directory.Exists) fi.Directory.Create();
 

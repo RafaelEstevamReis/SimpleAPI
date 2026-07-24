@@ -40,7 +40,7 @@ namespace Simple.API
         public event EventHandler<DeserializeJObjectOverrideArgs> DeserializeJObjectOverride;
 
         /// <summary>
-        /// Ignore Nulls when building parameteres
+        /// Ignore Nulls when building parameters
         /// </summary>
         public bool NullParameterHandlingPolicy_IgnoreNulls
         {
@@ -74,7 +74,7 @@ namespace Simple.API
         /// </summary>
         public readonly Uri BaseUri;
         /// <summary>
-        /// Creates a new insance
+        /// Creates a new instance
         /// </summary>
         /// <param name="baseUrl">Base url of the API</param>
         /// <param name="clientHandler">Optional HttpClientHandler to configure</param>

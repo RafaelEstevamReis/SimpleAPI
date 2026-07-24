@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Simple.API
 {
     /// <summary>
-    /// Entensions for the client
+    /// Extensions for the client
     /// </summary>
     public static class ClientInfoExtensions
     {

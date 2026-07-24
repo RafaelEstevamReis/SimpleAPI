@@ -230,7 +230,7 @@ public class ClientBuilder : DispatchProxy
         }
         if (targetMethod.Name == "SetAuthorizationBearer")
         {
-            if (args.Length != 1) throw new ArgumentException("Expcted `string` bearer parameter");
+            if (args.Length != 1) throw new ArgumentException("Expected `string` bearer parameter");
 
             client.SetAuthorizationBearer((string)args[0]);
             intRet = null; // void
@@ -238,7 +238,7 @@ public class ClientBuilder : DispatchProxy
         }
         if (targetMethod.Name == "SetHeader")
         {
-            if (args.Length != 2) throw new ArgumentException("Expcted `string` header key and value parameters");
+            if (args.Length != 2) throw new ArgumentException("Expected `string` header key and value parameters");
 
             client.SetHeader((string)args[0], (string)args[1]);
             intRet = null; // void
