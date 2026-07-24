@@ -16,12 +16,16 @@ public class ClientBuilder : DispatchProxy
 {
     static readonly Type TypeOfTask = typeof(Task);
 
-    static readonly MethodInfo[] MethodsOfClientInfo = typeof(ClientInfo).GetMethods();
-    static readonly MethodInfo MethodGetAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync) && o.IsGenericMethod).First();
-    static readonly MethodInfo MethodPostAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PostAsync) && o.IsGenericMethod).First();
-    static readonly MethodInfo MethodPutAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PutAsync) && o.IsGenericMethod).First();
-    static readonly MethodInfo MethodPatchAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PatchAsync) && o.IsGenericMethod).First();
-    static readonly MethodInfo MethodDeleteAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.DeleteAsync) && o.IsGenericMethod).First();
+    static readonly MethodInfo MethodGetAsync = resolve(typeof(ClientInfo), nameof(ClientInfo.GetAsync), typeof(string));
+    static readonly MethodInfo MethodPostAsync = resolve(typeof(ClientInfo), nameof(ClientInfo.PostAsync), typeof(string), typeof(object));
+    static readonly MethodInfo MethodPutAsync = resolve(typeof(ClientInfo), nameof(ClientInfo.PutAsync), typeof(string), typeof(object));
+    static readonly MethodInfo MethodPatchAsync = resolve(typeof(ClientInfo), nameof(ClientInfo.PatchAsync), typeof(string), typeof(object));
+    static readonly MethodInfo MethodDeleteAsync = resolve(typeof(ClientInfo), nameof(ClientInfo.DeleteAsync), typeof(string));
+    // Resolves the generic ClientInfo overload with an exact parameter signature,
+    // instead of relying on GetMethods() declaration order.
+    static MethodInfo resolve(Type owner, string name, params Type[] paramTypes)
+        => owner.GetMethods().Single(o => o.Name == name && o.IsGenericMethod
+            && o.GetParameters().Select(p => p.ParameterType).SequenceEqual(paramTypes));
 
     static readonly Type TypeOfResponseExtensions = typeof(ResponseExtensions);
     static readonly MethodInfo MethodGetSuccessfulDataTask = TypeOfResponseExtensions
@@ -31,6 +35,7 @@ public class ClientBuilder : DispatchProxy
         .First(); // Exception if not found
 
     internal ClientInfo client;
+
     /// <summary>
     /// Creates a new instance for the specified Interface
     /// </summary>
@@ -54,23 +59,24 @@ public class ClientBuilder : DispatchProxy
 
         return proxy;
     }
+
     /// <summary>
     /// Whenever any method on the generated proxy type is called, this method
     /// will be invoked to dispatch control.
     /// </summary>
     protected override object Invoke(MethodInfo targetMethod, object[] args)
     {
-        // Internal Methods
-        if (processInternalFunctions(targetMethod, args, out object intRet))
-        {
-            return intRet;
-        }
-
         /* Validations */
         MethodAttribute httpMethod = getHttpMethodAttribute(targetMethod);
-        if (httpMethod == null) throw new InvalidOperationException($"Method {targetMethod.Name} lacks MethodAttribute");
+        if (httpMethod == null)
+        {
+            // No HTTP attribute -> internal helper (GetInternalClient / SetAuthorizationBearer / SetHeader).
+            // HTTP attributes take precedence, so a mapped method named like an internal is not hijacked.
+            if (processInternalFunctions(targetMethod, args, out object intRet)) return intRet;
+            throw new InvalidOperationException($"Method {targetMethod.Name} lacks MethodAttribute");
+        }
 
-        // Ensure the method returns a Task<T>
+        // Ensure the method returns a Task
         if (!TypeOfTask.IsAssignableFrom(targetMethod.ReturnType)) throw new InvalidOperationException($"Method {targetMethod.Name} must return a Task");
 
         // Check InRoute
@@ -85,20 +91,20 @@ public class ClientBuilder : DispatchProxy
         // Get the return type (e.g., Response<TestResponse> from Task<Response<TestResponse>>)
         var taskReturnType = targetMethod.ReturnType.IsGenericType ? targetMethod.ReturnType.GetGenericArguments()[0] : null;
 
-        // Detect if Response<T> or <T>
+        // Detect if Response<T>, <T>, or plain Task
         Type innerType;
         bool usesResponseReturn;
-        if (taskReturnType == null || !taskReturnType.IsGenericType || taskReturnType.GetGenericTypeDefinition() != typeof(Response<>))
+        if (taskReturnType != null && taskReturnType.IsGenericType && taskReturnType.GetGenericTypeDefinition() == typeof(Response<>))
         {
-            // Returns Task<T>, will call GetSuccessfulData<T>()
-            innerType = taskReturnType;
-            usesResponseReturn = false;
+            // Task<Response<T>>: return the Response<T> untouched
+            innerType = taskReturnType.GetGenericArguments()[0];
+            usesResponseReturn = true;
         }
         else
         {
-            // Extract the inner type T (e.g., TestResponse from Response<TestResponse>)
-            innerType = taskReturnType.GetGenericArguments()[0];
-            usesResponseReturn = true;
+            // Task<T> (unwrap via GetSuccessfulData) or plain Task (no body -> discard as object)
+            innerType = taskReturnType ?? typeof(object);
+            usesResponseReturn = false;
         }
 
         /* Extract Route parameters */
@@ -109,7 +115,7 @@ public class ClientBuilder : DispatchProxy
         }
 
         /* Method Selection */
-        selectMethodToExecute(route, args, httpMethod, innerType, out MethodInfo methodToCall, out object[] methodArgs);
+        selectMethodToExecute(route, args, httpMethod, innerType, client.NullParameterHandlingPolicy_IgnoreNulls, out MethodInfo methodToCall, out object[] methodArgs);
         // Call ClientInfo.[Method]Async<T> dynamically with the inner type
         var task = (Task)methodToCall.Invoke(client, methodArgs);
 
@@ -154,35 +160,30 @@ public class ClientBuilder : DispatchProxy
         args = lstParams.ToArray();
     }
 
-    private static void selectMethodToExecute(string route, object[] args, MethodAttribute httpMethod, Type innerType, out MethodInfo methodToCall, out object[] methodArgs)
+    private static void selectMethodToExecute(string route, object[] args, MethodAttribute httpMethod, Type innerType, bool ignoreNulls, out MethodInfo methodToCall, out object[] methodArgs)
     {
         if (httpMethod is GetAttribute)
         {
             methodToCall = MethodGetAsync.MakeGenericMethod(innerType);
-
+            // A leftover (non-[InRoute]) argument is serialized into the query string,
+            // mirroring ClientInfoExtensions.GetAsync<T>(client, service, object).
             if (args.Length == 0) methodArgs = [route];
-            else methodArgs = [route, args[0]];
+            else methodArgs = [Helper.buildUrl(route, Helper.buildParams(args[0], ignoreNulls))];
         }
         else if (httpMethod is PostAttribute)
         {
             methodToCall = MethodPostAsync.MakeGenericMethod(innerType);
-
-            if (args.Length == 0) methodArgs = [route, null];
-            else methodArgs = [route, args[0]];
+            methodArgs = args.Length == 0 ? [route, null] : [route, args[0]];
         }
         else if (httpMethod is PutAttribute)
         {
             methodToCall = MethodPutAsync.MakeGenericMethod(innerType);
-
-            if (args.Length == 0) methodArgs = [route, null];
-            else methodArgs = [route, args[0]];
+            methodArgs = args.Length == 0 ? [route, null] : [route, args[0]];
         }
         else if (httpMethod is PatchAttribute)
         {
             methodToCall = MethodPatchAsync.MakeGenericMethod(innerType);
-
-            if (args.Length == 0) methodArgs = [route, null];
-            else methodArgs = [route, args[0]];
+            methodArgs = args.Length == 0 ? [route, null] : [route, args[0]];
         }
         else if (httpMethod is DeleteAttribute)
         {
