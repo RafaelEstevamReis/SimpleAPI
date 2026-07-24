@@ -277,7 +277,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
-            msg.Content = buildJsonContent(value, msg);
+            msg.Content = buildObjectContent(value, msg);
 
             return await sendMessageAsync<T>(uri, msg);
         }
@@ -290,7 +290,7 @@ namespace Simple.API
         {
             var uri = new Uri(BaseUri, service);
             using var msg = new HttpRequestMessage(HttpMethod.Put, uri);
-            msg.Content = buildJsonContent(value, msg);
+            msg.Content = buildObjectContent(value, msg);
 
             return await sendMessageAsync(msg);
         }
@@ -306,7 +306,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
-            msg.Content = buildJsonContent(value, msg);
+            msg.Content = buildObjectContent(value, msg);
 
             return await sendMessageAsync<T>(uri, msg);
         }
@@ -320,7 +320,7 @@ namespace Simple.API
             var uri = new Uri(BaseUri, service);
 
             using var msg = new HttpRequestMessage(new HttpMethod("PATCH"), uri);
-            msg.Content = buildJsonContent(value, msg);
+            msg.Content = buildObjectContent(value, msg);
 
             return await sendMessageAsync(msg);
         }
@@ -471,7 +471,8 @@ namespace Simple.API
             else if (!binary)
             {
                 // Can be encoded 
-                if (content.StartsWith("%7B"))
+                if (content.StartsWith("%7B", StringComparison.OrdinalIgnoreCase)
+                    || content.StartsWith("%5B", StringComparison.OrdinalIgnoreCase))
                 {
                     // URLEncoded json
                     content = WebUtility.UrlDecode(content);
