@@ -8,7 +8,10 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class WebSocket<TSend, TReceive>
+public class WebSocket<TSend, TReceive> : IDisposable
+#if !NETSTANDARD2_0
+    , IAsyncDisposable
+#endif
 {
     private ClientWebSocket webSocket;
     private CancellationTokenSource cancelSource;
@@ -53,14 +56,14 @@ public class WebSocket<TSend, TReceive>
             try
             {
                 await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-                cancelSource.Cancel();
+                cancelSource?.Cancel();
             }
             catch (OperationCanceledException) { }
         }
         webSocket.Dispose();
         webSocket = null;
 
-        cancelSource.Dispose();
+        cancelSource?.Dispose();
         cancelSource = null;
     }
     private async Task receiveLoop()
@@ -85,7 +88,15 @@ public class WebSocket<TSend, TReceive>
 
                 if (receiveResult.MessageType == WebSocketMessageType.Close)
                 {
-                    OnConnectionClosed?.Invoke(this, receiveResult.CloseStatus ?? WebSocketCloseStatus.Empty);
+                    var closeStatus = receiveResult.CloseStatus ?? WebSocketCloseStatus.Empty;
+                    // Complete the closing handshake: echo a Close frame back (we already got the server's)
+                    if (webSocket.State == WebSocketState.CloseReceived)
+                    {
+                        try { await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None); }
+                        catch (Exception) { /* best-effort */ }
+                    }
+                    OnConnectionClosed?.Invoke(this, closeStatus);
+                    await DisconnectAsync(); // release resources (idempotent, null-safe)
                     break;
                 }
                 outputStream.Position = 0;
@@ -96,8 +107,9 @@ public class WebSocket<TSend, TReceive>
         catch (OperationCanceledException) { /**/ }
         catch (Exception ex)
         {
-            if (OnError == null) throw;
-            OnError.Invoke(this, ex);
+            // Never rethrow on this orphaned background task. Surface via OnError when handled,
+            // then always release resources so a handler-less failure closes cleanly instead of leaking.
+            OnError?.Invoke(this, ex);
             await DisconnectAsync();
         }
         finally
@@ -107,19 +119,27 @@ public class WebSocket<TSend, TReceive>
     }
 
     public async Task SendMessageAsync(TSend data)
-        => await SendMessageAsync(data, cancelSource.Token);
+        => await SendMessageAsync(data, cancelSource?.Token ?? CancellationToken.None);
 
     public async Task SendMessageAsync(TSend data, CancellationToken cancellationToken)
     {
+        ensureConnected();
         var d = Processor.ProcessSendData(data);
         await webSocket.SendAsync(d.Item1, d.Item2, true, cancellationToken);
     }
     public async Task SendCloseMessageAsync()
-        => await SendCloseMessageAsync(cancelSource.Token);
+        => await SendCloseMessageAsync(cancelSource?.Token ?? CancellationToken.None);
     public async Task SendCloseMessageAsync(CancellationToken cancellationToken)
     {
+        ensureConnected();
         var d = Processor.ProcessClose();
         await webSocket.SendAsync(d, WebSocketMessageType.Close, true, cancellationToken);
+    }
+
+    private void ensureConnected()
+    {
+        if (webSocket is null || webSocket.State != WebSocketState.Open)
+            throw new InvalidOperationException("WebSocket is not connected. Call ConnectAsync first.");
     }
     private void responseReceived(Stream inputStream)
     {
@@ -127,7 +147,19 @@ public class WebSocket<TSend, TReceive>
         OnMessageReceived?.Invoke(this, data);
     }
 
-    public void Dispose() => DisconnectAsync().Wait();
+    public void Dispose()
+    {
+        DisconnectAsync().GetAwaiter().GetResult();
+        GC.SuppressFinalize(this);
+    }
+
+#if !NETSTANDARD2_0
+    public async System.Threading.Tasks.ValueTask DisposeAsync()
+    {
+        await DisconnectAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
+    }
+#endif
 
 }
 #endif
