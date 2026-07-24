@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,11 +41,48 @@ public static class ResponseExtensions
     public static async Task ReadSSE(this Response<Stream> response, Action<string> textEvents, CancellationToken token)
     {
         response.EnsureSuccessStatusCode();
-        using var reader = new StreamReader(response.Data);
-        while (!reader.EndOfStream && !token.IsCancellationRequested)
+        using var reader = new StreamReader(response.Data, Encoding.UTF8);
+
+        var data = new StringBuilder();
+        bool hasData = false;
+
+        while (!token.IsCancellationRequested)
         {
+#if NET7_0_OR_GREATER
+            string line = await reader.ReadLineAsync(token);
+#else
             string line = await reader.ReadLineAsync();
-            textEvents(line);
+#endif
+            if (line == null) break; // end of stream
+
+            if (line.Length == 0)
+            {
+                // Blank line dispatches the buffered event.
+                // Per spec, an event not terminated by a blank line (incomplete at
+                // end of stream) is discarded, so no flush after the loop.
+                if (hasData)
+                {
+                    textEvents(data.ToString());
+                    data.Clear();
+                    hasData = false;
+                }
+                continue;
+            }
+            if (line[0] == ':') continue; // comment line
+
+            // field parsing: "field" or "field:value" with one optional leading space
+            int colon = line.IndexOf(':');
+            string field = colon < 0 ? line : line.Substring(0, colon);
+            string value = colon < 0 ? string.Empty : line.Substring(colon + 1);
+            if (value.Length > 0 && value[0] == ' ') value = value.Substring(1);
+
+            // event/id/retry are ignored by the data-only API
+            if (field == "data")
+            {
+                if (hasData) data.Append('\n');
+                data.Append(value);
+                hasData = true;
+            }
         }
     }
     public static async Task ReadSSE(this Task<Response<Stream>> responseTask, Action<string> textEvents, CancellationToken token)
@@ -52,24 +90,18 @@ public static class ResponseExtensions
 
     public static async Task ReadSSE(this Response<Stream> response, Action<Newtonsoft.Json.Linq.JObject> jEvents, CancellationToken token)
     {
-        await response.ReadSSE(textEvents: (l) =>
+        await response.ReadSSE(textEvents: (data) =>
         {
-            if (string.IsNullOrEmpty(l)) return;
-
-            var text = l;
-            if (!text.StartsWith("{") && !text.StartsWith("["))
-            {
-                text = "{" + text + "}"; // Rebuild object
-            }
+            if (string.IsNullOrEmpty(data)) return;
             try
             {
-                jEvents(Newtonsoft.Json.Linq.JObject.Parse(text));
+                jEvents(Newtonsoft.Json.Linq.JObject.Parse(data));
             }
             catch (Exception ex)
             {
                 var jEv = Newtonsoft.Json.Linq.JObject.FromObject(new
                 {
-                    OriginalLine = l,
+                    OriginalLine = data,
                     ExceptionMessage = ex.Message,
                     ExceptionContent = ex.ToString(),
                 });
