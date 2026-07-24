@@ -17,11 +17,11 @@ public class ClientBuilder : DispatchProxy
     static readonly Type TypeOfTask = typeof(Task);
 
     static readonly MethodInfo[] MethodsOfClientInfo = typeof(ClientInfo).GetMethods();
-    static readonly MethodInfo MethodGetAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync)).First();
-    static readonly MethodInfo MethodPostAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PostAsync)).First();
-    static readonly MethodInfo MethodPutAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PutAsync)).First();
-    static readonly MethodInfo MethodPatchAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PatchAsync)).First();
-    static readonly MethodInfo MethodDeleteAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.DeleteAsync)).First();
+    static readonly MethodInfo MethodGetAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.GetAsync) && o.IsGenericMethod).First();
+    static readonly MethodInfo MethodPostAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PostAsync) && o.IsGenericMethod).First();
+    static readonly MethodInfo MethodPutAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PutAsync) && o.IsGenericMethod).First();
+    static readonly MethodInfo MethodPatchAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.PatchAsync) && o.IsGenericMethod).First();
+    static readonly MethodInfo MethodDeleteAsync = MethodsOfClientInfo.Where(o => o.Name == nameof(ClientInfo.DeleteAsync) && o.IsGenericMethod).First();
 
     static readonly Type TypeOfResponseExtensions = typeof(ResponseExtensions);
     static readonly MethodInfo MethodGetSuccessfulDataTask = TypeOfResponseExtensions
@@ -179,7 +179,7 @@ public class ClientBuilder : DispatchProxy
         }
         else if (httpMethod is PatchAttribute)
         {
-            methodToCall = MethodPutAsync.MakeGenericMethod(innerType);
+            methodToCall = MethodPatchAsync.MakeGenericMethod(innerType);
 
             if (args.Length == 0) methodArgs = [route, null];
             else methodArgs = [route, args[0]];
@@ -187,9 +187,7 @@ public class ClientBuilder : DispatchProxy
         else if (httpMethod is DeleteAttribute)
         {
             methodToCall = MethodDeleteAsync.MakeGenericMethod(innerType);
-
-            if (args.Length == 0) methodArgs = [route, null];
-            else methodArgs = [route, args[0]];
+            methodArgs = [route]; // ClientInfo.DeleteAsync<T> takes only the service route
         }
         else throw new NotSupportedException("HttpMethod not supported");
     }
