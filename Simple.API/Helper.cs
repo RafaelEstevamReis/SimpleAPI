@@ -30,7 +30,7 @@ namespace Simple.API
         internal static string buildUrl(string service, IEnumerable<KeyValuePair<string, string>> values)
         {
             string pars = string.Join("&", values.Select(pair => $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}"));
-            return $"{service}?{pars}";
+            return string.IsNullOrEmpty(pars) ? service : $"{service}?{pars}";
         }
         internal static IEnumerable<KeyValuePair<string, string>> buildParams(object p, bool ignoreNulls)
         {
