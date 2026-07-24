@@ -176,6 +176,17 @@ namespace Simple.API
 
             return await sendMessageAsync<T>(uri, msg);
         }
+        /// <summary>
+        /// Sends a Get request
+        /// </summary>
+        /// <param name="service">Service to request from, will be concatenated with BaseUri</param>
+        public async Task<Response> GetAsync(string service)
+        {
+            var uri = new Uri(BaseUri, service);
+            using var msg = new HttpRequestMessage(HttpMethod.Get, uri);
+
+            return await sendMessageAsync(msg);
+        }
 
         /* DELETE */
         /// <summary>
