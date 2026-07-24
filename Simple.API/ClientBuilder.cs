@@ -252,11 +252,27 @@ public class ClientBuilder : DispatchProxy
 
 }
 
+/// <summary>
+/// Optional interface exposing the built client's internal helpers, which are not mapped to HTTP calls.
+/// Inherit it on your API interface to reach the underlying client and the auth/header shortcuts.
+/// </summary>
 public interface IBuildedClientInternalFunctions
 {
+    /// <summary>
+    /// Gets the underlying <see cref="ClientInfo"/> instance backing the generated client
+    /// </summary>
     ClientInfo GetInternalClient();
+    /// <summary>
+    /// Sets the Authorization header with a Bearer token
+    /// </summary>
+    /// <param name="bearer">Bearer token value (without the "Bearer " prefix)</param>
     void SetAuthorizationBearer(string bearer);
-    void SetHeader(string key,  string value);
+    /// <summary>
+    /// Sets a request header, replacing any existing value
+    /// </summary>
+    /// <param name="key">Header name</param>
+    /// <param name="value">Header value</param>
+    void SetHeader(string key, string value);
 }
 
 #endif

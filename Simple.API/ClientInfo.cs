@@ -599,23 +599,62 @@ namespace Simple.API
                 return $"{Received:G} {Uri.PathAndQuery} [{StatusCode}] {Content}";
             }
         }
+        /// <summary>
+        /// Arguments for the DeserializeJValueOverride event, letting each JSON value be inspected or replaced before binding
+        /// </summary>
         public class DeserializeJValueOverrideArgs
         {
+            /// <summary>
+            /// Set to true to replace the original value with <see cref="Value"/>
+            /// </summary>
             public bool Handled { get; set; }
+            /// <summary>
+            /// The JSON value being deserialized; assign a new value and set <see cref="Handled"/> to override it
+            /// </summary>
             public JValue Value { get; set; }
         }
+        /// <summary>
+        /// Arguments for the JsonSerializeOverride event, letting the request body serialization be customized
+        /// </summary>
         public class JsonSerializeArgs
         {
+            /// <summary>
+            /// The request message the serialized content will be attached to
+            /// </summary>
             public HttpRequestMessage Request { get; set; }
+            /// <summary>
+            /// The object being serialized
+            /// </summary>
             public object Object { get; set; }
+            /// <summary>
+            /// The serialized payload; assign a new value and set <see cref="Handled"/> to override the default serialization
+            /// </summary>
             public string? Value { get; set; }
+            /// <summary>
+            /// Set to true to use <see cref="Value"/> instead of the default serialization
+            /// </summary>
             public bool Handled { get; set; }
         }
+        /// <summary>
+        /// Arguments for the DeserializeJObjectOverride event, letting the whole response object be inspected or mutated before binding
+        /// </summary>
         public class DeserializeJObjectOverrideArgs
         {
+            /// <summary>
+            /// The HTTP response being processed
+            /// </summary>
             public HttpResponseMessage Response { get; set; }
+            /// <summary>
+            /// The target type the JSON will be bound to
+            /// </summary>
             public Type TargetType { get; set; }
+            /// <summary>
+            /// The raw JSON response content
+            /// </summary>
             public string JsonContent { get; set; }
+            /// <summary>
+            /// The parsed response object; mutate it to alter the result before it is converted to <see cref="TargetType"/>
+            /// </summary>
             public JObject Value { get; set; }
         }
     }
